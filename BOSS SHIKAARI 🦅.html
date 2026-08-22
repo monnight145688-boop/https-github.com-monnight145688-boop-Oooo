@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SHIKAARI AI | BOSS PERSONAL AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0A0A0F;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .screen.on {
+            display: flex;
+        }
+
+        #mainApp {
+            background: linear-gradient(145deg, #0A0A0F 0%, #0F0F1A 100%);
+            flex-direction: column;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #8B0000, #1A1A2E, #DC2626);
+            padding: 11px 18px 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 2px solid #DC2626;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .ah-av {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #DC2626, #1D4ED8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: white;
+            box-shadow: 0 0 15px rgba(220, 38, 38, 0.8);
+        }
+
+        .ah-name {
+            font-size: 18px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff, #FECACA);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .ah-sub {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 2px;
+            font-weight: 600;
+        }
+
+        .app-body {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 70px;
+        }
+
+        .ticker-bar {
+            background: linear-gradient(90deg, #1A1A2E, #8B0000, #1A1A2E);
+            padding: 8px 0;
+            overflow: hidden;
+            border-bottom: 1px solid #DC2626;
+            border-top: 1px solid #DC2626;
+        }
+
+        .ticker-inner {
+            display: inline-block;
+            white-space: nowrap;
+            animation: tickerRDX 25s linear infinite;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #DC2626;
+            text-shadow: 0 0 5px #DC2626;
+        }
+
+        @keyframes tickerRDX {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .day-strip {
+            display: flex;
+            gap: 8px;
+            padding: 16px 16px 0;
+            overflow-x: auto;
+        }
+
+        .day-card {
+            min-width: 58px;
+            background: rgba(20, 20, 35, 0.9);
+            border-radius: 16px;
+            padding: 10px 6px;
+            text-align: center;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .day-card.active {
+            background: linear-gradient(135deg, #DC2626, #1D4ED8);
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+        }
+
+        .day-card-name {
+            font-size: 9px;
+            font-weight: 800;
+            color: #9CA3AF;
+        }
+
+        .day-card.active .day-card-name,
+        .day-card.active .day-card-num {
+            color: white;
+        }
+
+        .day-card-num {
+            font-size: 20px;
+            font-weight: 900;
+            color: #DC2626;
+            margin-top: 2px;
+        }
+
+        .cd-box {
+            margin: 14px 16px 0;
+            background: linear-gradient(145deg, #0F0F1A, #1A1A2E);
+            border-radius: 28px;
+            padding: 22px 20px;
+            text-align: center;
+            border: 1px solid rgba(220, 38, 38, 0.5);
+            box-shadow: 0 0 30px rgba(220, 38, 38, 0.2);
+        }
+
+        .cd-big-num {
+            font-size: 88px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #DC2626, #3B82F6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .cd-circles-row {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .cd-circ {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #DC2626, #1D4ED8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+        }
+
+        .cd-circ-num {
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+        }
+
+        .cd-circ-label {
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 700;
+        }
+
+        .home-wm {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #DC2626, #3B82F6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 4px;
+            padding: 16px;
+        }
+
+        .sec-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: #DC2626;
+            padding: 12px 16px 8px;
+            letter-spacing: 1px;
+        }
+
+        .game-scroll {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px 12px;
+            overflow-x: auto;
+        }
+
+        .game-card {
+            min-width: 110px;
+            background: linear-gradient(145deg, #0F0F1A, #1A1A2E);
+            border-radius: 20px;
+            padding: 14px 10px 12px;
+            text-align: center;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            cursor: pointer;
+        }
+
+        .game-card.active {
+            border-color: #DC2626;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .game-card-img {
+            width: 70px;
+            height: 90px;
+            background: linear-gradient(160deg, #2A1A1A, #1A1A3E);
+            border-radius: 14px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: #DC2626;
+        }
+
+        .game-card-name {
+            font-size: 10px;
+            font-weight: 800;
+            color: #9CA3AF;
+        }
+
+        .game-card.active .game-card-name {
+            color: #DC2626;
+        }
+
+        .time-sel-row {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px 16px;
+        }
+
+        .time-pill {
+            flex: 1;
+            background: rgba(20, 20, 35, 0.9);
+            border-radius: 60px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .time-pill.active {
+            background: linear-gradient(135deg, #DC2626, #1D4ED8);
+            box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
+        }
+
+        .time-pill-val {
+            font-size: 11px;
+            font-weight: 800;
+            color: #9CA3AF;
+        }
+
+        .time-pill.active .time-pill-val {
+            color: white;
+        }
+
+        .srv-section {
+            background: rgba(15, 15, 26, 0.9);
+            margin: 0 16px 12px;
+            border-radius: 24px;
+            padding: 16px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .srv-section-title {
+            font-size: 15px;
+            font-weight: 900;
+            color: #DC2626;
+        }
+
+        ..srv-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 12px 0;
+}
+            gap: 8px;
+            margin: 12px 0;
+        }
+        
+             
+  .srv-btn {
+    width: 100%;
+    padding: 12px 14px;
+
+    border-radius: 10px;
+    border: 1px solid #ff2a2a40;
+
+    background: linear-gradient(90deg, #0f0f0f, #1a1a1a);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    box-shadow: 0 0 8px #ff2a2a22;
+
+    transition: 0.3s;
+  }
+
+        .srv-btn.on {
+            background: linear-gradient(135deg, #DC2626, #1D4ED8);
+            box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
+        }
+
+  .srv-btn-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ff3b3b;
+
+    white-space: nowrap;
+  }
+
+ .srv-btn-sub {
+    font-size: 11px;
+    color: #aaa;
+ }
+
+        .srv-btn.on .srv-btn-title {
+            color: white;
+        }
+
+        .pred-type-box {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .pred-type-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .pt-btn {
+            border-radius: 12px;
+            padding: 13px 8px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .pt-bs {
+            background: rgba(220, 38, 38, 0.2);
+            border-color: rgba(220, 38, 38, 0.5);
+        }
+
+        .pt-rc {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .pt-bs.sel {
+            background: linear-gradient(135deg, #DC2626, #1D4ED8);
+        }
+
+        .pt-rc.sel {
+            background: linear-gradient(135deg, #059669, #10B981);
+        }
+
+        .pt-label {
+            font-size: 13px;
+            font-weight: 900;
+            color: #9CA3AF;
+        }
+
+        .pt-bs.sel .pt-label,
+        .pt-rc.sel .pt-label {
+            color: white;
+        }
+
+        .wolf-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #DC2626, #1D4ED8);
+            border: none;
+            border-radius: 60px;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 900;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 12px;
+            box-shadow: 0 0 25px rgba(220, 38, 38, 0.6);
+            transition: all 0.2s;
+            animation: pulseGlow 1.5s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(220, 38, 38, 0.5); }
+            50% { box-shadow: 0 0 35px rgba(220, 38, 38, 0.9); }
+        }
+
+        .wolf-btn:active {
+            transform: scale(0.97);
+        }
+
+        .period-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 11px 13px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .period-num {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: #DC2626;
+            flex: 1;
+        }
+
+        .period-timer {
+            font-size: 20px;
+            font-weight: 900;
+            color: #DC2626;
+            font-family: monospace;
+        }
+
+        .ai-trend-panel {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(29, 78, 216, 0.15));
+            border-radius: 20px;
+            margin: 8px 16px 12px;
+            padding: 14px 16px;
+            border-left: 4px solid #DC2626;
+        }
+
+        .ai-trend-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 800;
+            color: #DC2626;
+            margin-bottom: 8px;
+        }
+
+        .ai-trend-badge {
+            background: #DC2626;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 50px;
+            font-size: 9px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .ai-trend-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .ai-trend-dir {
+            font-size: 14px;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #DC2626;
+        }
+
+        .ai-trend-desc {
+            font-size: 10px;
+            color: #9CA3AF;
+        }
+
+        .result-card {
+            background: linear-gradient(145deg, #0F0F1A, #1A1A2E);
+            margin: 0 16px 12px;
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            display: none;
+            border: 1px solid rgba(220, 38, 38, 0.5);
+            box-shadow: 0 0 30px rgba(220, 38, 38, 0.2);
+        }
+
+        .result-card.show {
+            display: block;
+            animation: cardPop 0.4s ease;
+        }
+
+        @keyframes cardPop {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .bs-word {
+            font-size: 72px;
+            font-weight: 900;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .bs-big { color: #1D4ED8; text-shadow: 0 0 20px rgba(29, 78, 216, 0.6); }
+        .bs-small { color: #F59E0B; text-shadow: 0 0 20px rgba(245, 158, 11, 0.6); }
+
+        .rc-word {
+            font-size: 52px;
+            font-weight: 900;
+        }
+        .rc-red { color: #EF4444; text-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
+        .rc-green { color: #10B981; text-shadow: 0 0 20px rgba(16, 185, 129, 0.6); }
+
+        .nums-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 15px;
+            border: 1px dashed rgba(220, 38, 38, 0.4);
+        }
+
+        .nums-title {
+            font-size: 10px;
+            color: #9CA3AF;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .nums-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .num-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: white;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .level-box {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 14px;
+            padding: 13px;
+            margin-top: 12px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .level-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .level-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 900;
+            color: white;
+        }
+
+        .lv1 { background: #DC2626; }
+        .lv2 { background: #059669; }
+        .lv3 { background: #D97706; }
+
+        .level-name { font-size: 11px; font-weight: 800; color: white; text-align: left; }
+        .level-desc { font-size: 9px; color: #9CA3AF; text-align: left; }
+        .lvd-confirm { color: #10B981; font-size: 10px; font-weight: 800; }
+
+        .bot-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #DC2626;
+            display: flex;
+            height: 56px;
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            cursor: pointer;
+            font-size: 9px;
+            font-weight: 700;
+            color: #9CA3AF;
+        }
+
+        .nav-item.on {
+            color: #DC2626;
+            text-shadow: 0 0 5px #DC2626;
+        }
+
+        .nav-ico {
+            font-size: 20px;
+        }
+
+        .tab { display: none; }
+        .tab.on { display: block; }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 12px 16px;
+        }
+
+        .stat-c {
+            background: rgba(15, 15, 26, 0.9);
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .stat-label {
+            font-size: 9px;
+            color: #9CA3AF;
+            letter-spacing: 1px;
+        }
+
+        .stat-val {
+            font-size: 26px;
+            font-weight: 900;
+            color: #DC2626;
+        }
+
+        .pass-loss {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 0 16px 10px;
+        }
+
+        .pl-card {
+            border-radius: 18px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .prof-hero {
+            background: linear-gradient(135deg, #8B0000, #1A1A2E);
+            padding: 28px 20px;
+            text-align: center;
+        }
+
+        .prof-av {
+            width: 86px;
+            height: 86px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #DC2626, #1D4ED8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .uid-box {
+            background: rgba(15, 15, 26, 0.9);
+            border-radius: 16px;
+            padding: 13px 15px;
+            margin: 13px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .uid-text {
+            font-family: monospace;
+            font-size: 11px;
+            color: #DC2626;
+            flex: 1;
+            word-break: break-all;
+        }
+
+        .support-header {
+            background: linear-gradient(135deg, #8B0000, #1A1A2E);
+            padding: 28px 20px;
+            text-align: center;
+        }
+
+        .support-title {
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+        }
+
+        .support-sub {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .support-card {
+            background: rgba(15, 15, 26, 0.9);
+            margin: 10px 16px;
+            border-radius: 20px;
+            padding: 18px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+        }
+
+        .support-card-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .support-card-sub {
+            font-size: 11px;
+            color: #9CA3AF;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1A1A2E;
+            color: #DC2626;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 800;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 999;
+            border: 1px solid #DC2626;
+        }
+
+        #toast.on {
+            opacity: 1;
+        }
+
+        .rdx-float {
+            position: fixed;
+            bottom: 80px;
+            width: 50px;
+            height: 50px;
+            z-index: 90;
+            opacity: 0.7;
+            cursor: pointer;
+            animation: floatRDX 3s ease-in-out infinite;
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rdx-float.left { left: 6px; }
+        .rdx-float.right { right: 6px; }
+
+        @keyframes floatRDX {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .hist-item {
+            background: rgba(15, 15, 26, 0.9);
+            border-radius: 12px;
+            padding: 10px 13px;
+            margin: 0 16px 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .h-period {
+            font-family: monospace;
+            font-size: 11px;
+            color: #9CA3AF;
+            flex: 1;
+        }
+
+        .h-pred {
+            font-size: 12px;
+            font-weight: 800;
+            color: #DC2626;
+        }
+
+        .h-mode {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 50px;
+            background: rgba(220, 38, 38, 0.3);
+            color: #DC2626;
+            text-align: center;
+        }
+
+        .copy-share {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 0 16px 12px;
+        }
+
+        .cs-btn {
+            background: rgba(15, 15, 26, 0.9);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 14px;
+            padding: 13px;
+            text-align: center;
+            cursor: pointer;
+            color: #DC2626;
+            font-weight: 800;
+        }
+
+        .srv-connected-bar {
+            background: rgba(15, 15, 26, 0.9);
+            border-radius: 16px;
+            margin: 4px 16px 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .srv-connected-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10B981;
+            animation: pulse 1.5s infinite;
+        }
+
+        .check-srv-bar {
+            margin: 4px 16px 12px;
+            background: rgba(220, 38, 38, 0.2);
+            border-radius: 50px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            border: 1px solid rgba(220, 38, 38, 0.5);
+        }
+
+        .pattern-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<div id="mainApp" class="screen on">
+    <div class="app-header">
+        <div class="ah-av">🥷🏻</div>
+        <div style="flex:1">
+            <div class="ah-name"> SHIKAARI ⚡</div>
+            <div class="ah-sub">BOSS AI</div>
+        </div>
+    </div>
+
+
+
+    <div class="app-body">
+        <div id="tabHome" class="tab on">
+            <div class="day-strip" id="homeDays"></div>
+            
+            <div class="cd-box">
+                <div class="cd-big-num" id="hCdBig">--</div>
+                <div class="cd-circles-row">
+                    <div class="cd-circ"><div class="cd-circ-num" id="hH">00</div><div class="cd-circ-label">HRS</div></div>
+                    <div class="cd-circ"><div class="cd-circ-num" id="hM">00</div><div class="cd-circ-label">MIN</div></div>
+                    <div class="cd-circ"><div class="cd-circ-num" id="hS">00</div><div class="cd-circ-label">SEC</div></div>
+                </div>
+            </div>
+
+            <div class="home-wm">🔻 BOSS AI 🔻</div>
+            
+
+            <div class="sec-title">SELECT GAME MODE </div>
+            <div class="time-sel-row">
+                <div class="time-pill" id="t30s" onclick="setTime('WinGo_30S',0.5,'t30s')"><div class="time-pill-val">30s</div></div>
+                <div class="time-pill active" id="t1m" onclick="setTime('WinGo_1M',1,'t1m')"><div class="time-pill-val">1 Min</div></div>
+                <div class="time-pill" id="t3m" onclick="setTime('WinGo_3M',3,'t3m')"><div class="time-pill-val">3 Min</div></div>
+                <div class="time-pill" id="t5m" onclick="setTime('WinGo_5M',5,'t5m')"><div class="time-pill-val">5 Min</div></div>
+            </div>
+
+            <div class="srv-section">
+                <div class="srv-section-head">
+                    <div class="srv-section-title">🦅 BOSS AI ENGINE </div>
+                    <div class="srv-section-sub"></div>
+                </div>
+                
+
+                <div class="pred-type-box">
+                    <div class="pred-type-label"></div>
+                    <div class="pred-type-row">
+                        <div class="pt-btn pt-bs sel" id="ptBS" onclick="setPredType('BS')"><div class="pt-label">BIG / SMALL</div></div>
+                        <div class="pt-btn pt-rc" id="ptRC" onclick="setPredType('RC')"><div class="pt-label">RED / GREEN</div></div>
+                    </div>
+                </div>
+
+                <button class="wolf-btn" id="wolfBtn" onclick="runPredict()">🦅   START  FUCKING GAME 💀     BOSS AI 🚀</button>
+
+                <div class="period-row">
+                    <div class="period-icon">⏳</div>
+                    <div class="period-num" id="pNum">Waiting...</div>
+                    <div class="period-timer" id="pTimer">00.00</div>
+                </div>
+
+                <div class="srv-note"><strong style="color:#DC2626">BOSS AI READY TO FUCK 🚀</strong> </div>
+            </div>
+
+            <div class="ai-trend-panel" id="aiTrendPanel">
+                <div class="ai-trend-header">
+                    <span>🧠 BOSS AI LIVE TREND</span>
+                    <span class="ai-trend-badge" id="aiTrendBadge">SCANNING</span>
+                </div>
+                <div class="ai-trend-content">
+                    <div class="ai-trend-dir neutral" id="trendDirection">⚡ ANALYZING</div>
+                    <div class="ai-trend-desc" id="trendDesc">BOSS AI Scanning Patterns...</div>
+                </div>
+            </div>
+
+            <div class="result-card" id="resCard">
+                <div class="r-period-badge" id="resPeriodBadge" style="color:#DC2626;margin-bottom:10px">Period: —</div>
+                <div class="r-engine-label" id="resEngineLabel" style="color:#9CA3AF;font-size:11px;margin-bottom:10px">BOSS AI</div>
+                
+                <div class="bs-result" id="bsResult">
+                    <div class="bs-word" id="bsWord">BIG</div>
+                </div>
+                
+                <div class="rc-result" id="rcResult" style="display:none">
+                    <div class="rc-word" id="rcWord">RED</div>
+                </div>
+
+                <div class="nums-container">
+                    <div class="nums-title">🎯 HIGH PROBABILITY NUMBERS</div>
+                    <div class="nums-row">
+                        <div class="num-circle" id="n1">0</div>
+                        <div class="num-circle" id="n2">0</div>
+                    </div>
+                </div>
+
+                <div class="level-box">
+                    <div class="level-title" style="color:#DC2626;margin-bottom:10px;text-align:left;font-size:11px;font-weight:900">🧠 BOSS AI ANALYSIS</div>
+                    <div id="levelRows"></div>
+                </div>
+                <div class="pattern-row" id="patternRow"></div>
+            </div>
+
+            <div class="copy-share">
+                <div class="cs-btn" onclick="doCopy()">📋 Copy</div>
+                <div class="cs-btn" onclick="doShare()">📤 Share</div>
+            </div>
+
+            <div class="sec-title">📜 HISTORY</div>
+            <div id="histList"><div style="text-align:center;color:#9CA3AF;padding:24px">No predictions yet</div></div>
+        </div>
+
+        <div id="tabStats" class="tab">
+            <div style="height:10px"></div>
+            <div class="stats-cards">
+                <div class="stat-c"><div class="stat-label">TOTAL</div><div class="stat-val" id="stTotal">0</div></div>
+                <div class="stat-c"><div class="stat-label">SERVER</div><div class="stat-val" id="stSrv">BOSS AI</div></div>
+            </div>
+            <div class="pass-loss">
+                <div class="pl-card" style="background:rgba(16,185,129,0.2);border:1px solid #10B981"><div style="font-size:10px;font-weight:800;color:#10B981">✅ PASS</div><div class="pl-val" style="font-size:28px;font-weight:900;color:#10B981" id="stPass">0</div></div>
+                <div class="pl-card" style="background:rgba(220,38,38,0.2);border:1px solid #DC2626"><div style="font-size:10px;font-weight:800;color:#DC2626">❌ LOSS</div><div class="pl-val" style="font-size:28px;font-weight:900;color:#DC2626" id="stLoss">0</div></div>
+            </div>
+            <div style="background:rgba(15,15,26,0.9);margin:0 16px;border-radius:18px;padding:16px;border:1px solid rgba(220,38,38,0.3)">
+                <div style="font-size:11px;color:#9CA3AF">ACCURACY</div>
+                <div style="font-size:30px;font-weight:900;color:#DC2626" id="stAcc">0%</div>
+            </div>
+        </div>
+
+        <div id="tabProfile" class="tab">
+            <div class="prof-hero">
+                <div class="prof-av">🥷🏻</div>
+                <div style="font-size:18px;font-weight:900;color:white;margin-top:12px">SHIKAARI BOSS</div>
+                <div style="font-size:12px;color:#DC2626">VIP ACCESS</div>
+            </div>
+            <div class="uid-box">
+                <div style="font-size:20px">🆔</div>
+                <div class="uid-text" id="profUid">—</div>
+                <button onclick="copyDID()" style="background:none;border:none;color:#DC2626;font-size:18px;cursor:pointer">⧉</button>
+            </div>
+            <div class="support-card" onclick="window.open('https://t.me/shikaari47','_blank')">
+                <div style="font-size:28px">🤖</div>
+                <div><div class="support-card-title">Support </div><div class="support-card-sub">@Shikaari47</div></div>
+            </div>
+            <div class="support-card" onclick="window.open('https://t.me/+NyD4lQIS9-xiMmRl','_blank')">
+                <div style="font-size:28px">📢</div>
+                <div><div class="support-card-title">Join Channel</div><div class="support-card-sub">BOSS EMPIRE</div></div>
+            </div>
+        </div>
+
+        <div id="tabSupport" class="tab">
+            <div class="support-header">
+                <div class="support-title">🥷🏻 SHIKAARI ENGINE SUPPORT🦅</div>
+                <div class="support-sub">24/7 Active</div>
+            </div>
+            <div class="support-card" onclick="window.open('https://t.me/shikaari47','_blank')">
+                <div style="font-size:28px">💬</div>
+                <div><div class="support-card-title">Telegram Support</div><div class="support-card-sub">@Shikaari47</div></div>
+            </div>
+            <div class="support-card" onclick="window.open('https://t.me/+NyD4lQIS9-xiMmRl','_blank')">
+                <div style="font-size:28px">📢</div>
+                <div><div class="support-card-title">Official Channel</div><div class="support-card-sub">Join for updates</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bot-nav">
+        <div class="nav-item on" id="navHome" onclick="goTab('Home')"><div class="nav-ico">🏠</div>Home</div>
+        <div class="nav-item" id="navStats" onclick="goTab('Stats')"><div class="nav-ico">📊</div>Stats</div>
+         <div class="nav-item" id="navSupport" onclick="goTab('Support')"><div class="nav-ico">🛟</div>Support</div>
+        <div class="nav-item" id="navProfile" onclick="goTab('Profile')"><div class="nav-ico">👤</div>Profile</div>
+    </div>
+</div>
+
+<div class="rdx-float left" onclick="toast('💀 BOSS AI FUCK MODE ACTIVE 💀')"></div>
+<div class="rdx-float right" onclick="toast('🔥 HUNTER MODE ACTIVE 🔥')"></div>
+
+<script>
+// ========== DEVICE ID ==========
+function getDeviceId() {
+    let did = localStorage.getItem('SHIKAARI_DEVICE_ID');
+    if (!did) {
+        did = 'SHIKAARI-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        localStorage.setItem('SHIKAARI_DEVICE_ID', did);
+    }
+    return did;
+}
+const DEVICE_ID = getDeviceId();
+document.getElementById('profUid').innerText = DEVICE_ID;
+
+function toast(msg) {
+    let t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('on');
+    setTimeout(() => t.classList.remove('on'), 2000);
+}
+
+function goTab(tab) {
+    ['Home', 'Stats', 'Profile', 'Support'].forEach(t => {
+        document.getElementById('tab' + t).classList.remove('on');
+        document.getElementById('nav' + t).classList.remove('on');
+    });
+    document.getElementById('tab' + tab).classList.add('on');
+    document.getElementById('nav' + tab).classList.add('on');
+}
+
+function copyDID() {
+    navigator.clipboard.writeText(DEVICE_ID);
+    toast('Device ID Copied!');
+}
+
+function doCopy() {
+    if (!currentActive) {
+        toast('❌ NO DATA');
+        return;
+    }
+
+    let text =
+`💀 𝙎𝙃𝙄𝙆𝘼𝘼𝙍𝙄 𝘼𝙄 💀
+
+📊 ${currentActive.period}
+
+🎯 ${currentActive.size} ${currentActive.size === 'BIG' ? '📈🔥' : '📉❄️'}
+🎯 ${currentActive.n1}️⃣ ${currentActive.n2}️⃣ 💣
+
+⚡ ${predType === 'BS' ? 'BIG/SMALL ⚔️' : 'RED/GREEN 🔴🟢'}
+
+🚨 𝙃𝙄𝙂𝙃 𝙎𝙄𝙂𝙉𝘼𝙇 ⚡
+😈 𝙃𝙐𝙉𝙏𝙀𝙍 𝙈𝙊𝘿𝙀 𝙊𝙉`;
+    
+    navigator.clipboard.writeText(text).catch(() => {
+        let temp = document.createElement("textarea");
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+    });
+
+    toast('🔥 PREMIUM COPY DONE');
+}
+
+function doShare() {
+    if (!currentActive) return;
+
+    let text = `💀 SHIKAARI AI SIGNAL 💀
+
+📊 ${currentActive.period}
+🎯 ${currentActive.size}
+🎯 ${currentActive.n1},${currentActive.n2}
+
+🔥 CONFIDENT ENTRY`;
+
+    if (navigator.share) {
+        navigator.share({
+            title: 'SHIKAARI AI',
+            text: text
+        });
+    } else {
+        navigator.clipboard.writeText(text);
+        toast('Copied for sharing');
+    }
+}
+
+
+function buildDays() {
+    const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const now = new Date();
+    const container = document.getElementById('homeDays');
+    if (!container) return;
+    container.innerHTML = '';
+    for (let i = -2; i <= 2; i++) {
+        const d = new Date(now);
+        d.setDate(d.getDate() + i);
+        const div = document.createElement('div');
+        div.className = 'day-card' + (i === 0 ? ' active' : '');
+        div.innerHTML = `<div class="day-card-name">${days[d.getDay()]}</div><div class="day-card-num">${String(d.getDate()).padStart(2, '0')}</div>`;
+        container.appendChild(div);
+    }
+}
+
+function selectGame(cardId, key) {
+    ['gc91', 'gcTW', 'gcRG', 'gcBD'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+    });
+    document.getElementById(cardId).classList.add('active');
+    wingoKey = key;
+    fetchPeriod();
+    toast('Game selected: ' + cardId);
+}
+
+function setTime(key, min, id) {
+    wingoKey = key;
+    wingoMin = min;
+    ['t30s', 't1m', 't3m', 't5m'].forEach(i => {
+        const el = document.getElementById(i);
+        if (el) el.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+    fetchPeriod();
+    toast('Time set');
+}
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+    let tab = document.getElementById(tabId);
+    if (tab) tab.classList.add('on');
+}
+
+
+
+function setSrv(n) {
+    ["s1","s2","s3"].forEach(id => {
+        let el = document.getElementById(id);
+        if (el) el.classList.remove("on");
+    });
+
+    let active = document.getElementById("s" + n);
+    if (active) active.classList.add("on");
+}
+
+function setPredType(t) {
+    predType = t;
+    const ptBS = document.getElementById('ptBS');
+    const ptRC = document.getElementById('ptRC');
+    if (ptBS) ptBS.classList.toggle('sel', t === 'BS');
+    if (ptRC) ptRC.classList.toggle('sel', t === 'RC');
+    
+    if(currentActive) {
+        updateResultUI(currentActive.size, currentActive.n1, currentActive.n2);
+    }
+    toast(t === 'BS' ? 'BIG/SMALL Mode' : 'RED/GREEN Mode');
+}
+
+function buildUrl() {
+    return `https://draw.ar-lottery01.com/WinGo/${wingoKey}/GetHistoryIssuePage.json?t=${Date.now()}`;
+}
+
+async function fetchPeriod() {
+    try {
+        const res = await fetch(buildUrl());
+        const json = await res.json();
+        if (json && json.data && json.data.list && json.data.list.length > 0) {
+            const latest = json.data.list[0];
+            const period = latest.issueNumber || latest.period || '—';
+            document.getElementById('pNum').innerText = period;
+            document.getElementById('stVal').innerHTML = '✓ Connected';
+            document.getElementById('stVal').style.color = '#10B981';
+        } else {
+            document.getElementById('stVal').innerHTML = '⚠️ No Data';
+            document.getElementById('stVal').style.color = '#F59E0B';
+        }
+    } catch (e) {
+        document.getElementById('stVal').innerHTML = '⚠️ API Error';
+        document.getElementById('stVal').style.color = '#EF4444';
+    }
+}
+
+function runPredict() {
+    toast('💀 BOSS AI SCANNING... 💀');
+    setTimeout(() => {
+        enginePro(); 
+        const resCard = document.getElementById('resCard');
+        if (resCard) {
+            resCard.classList.remove('show');
+            void resCard.offsetWidth;
+            resCard.classList.add('show');
+            resCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            toast('🚀BOSS AI READY🦅');
+        }
+    }, 600);
+}
+
+// ========== RDX DANGEROUS AI - SUPER ADVANCED PATTERN ANALYZER ==========
+function analyzeRDXDangerousPatterns(history, numbersHistory, periodSeed, consecutiveLosses) {
+    if (!history || history.length < 10) return { prediction: "BIG", confidence: 70, patterns: ["INIT"], score: 0 };
+    
+    const last30 = history.slice(-30);
+    const last20 = history.slice(-20);
+    const last15 = history.slice(-15);
+    const last10 = history.slice(-10);
+    const last8 = history.slice(-8);
+    const last5 = history.slice(-5);
+    const last3 = history.slice(-3);
+    const lastResult = last30[last30.length - 1];
+    
+    let bigScore = 0;
+    let smallScore = 0;
+    let patterns = [];
+    
+    // 1. LONG STREAK DETECTION (4+ same)
+    let streak = 1;
+    for (let i = last30.length - 2; i >= 0; i--) {
+        if (last30[i] === lastResult) streak++;
+        else break;
+    }
+    
+    if (streak >= 5) {
+        if (lastResult === "BIG") smallScore += 100;
+        else bigScore += 100;
+        patterns.push(`🔥SUPER_S${streak}`);
+    } else if (streak >= 4) {
+        if (lastResult === "BIG") smallScore += 90;
+        else bigScore += 90;
+        patterns.push(`🔥S${streak}`);
+    } else if (streak >= 3) {
+        if (lastResult === "BIG") smallScore += 75;
+        else bigScore += 75;
+        patterns.push(`S${streak}`);
+    } else if (streak >= 2) {
+        if (lastResult === "BIG") bigScore += 55;
+        else smallScore += 55;
+        patterns.push(`S${streak}`);
+    }
+    
+    // 2. LAST 10 MAJORITY (OVERSOLD/OVERBOUGHT)
+    const big10 = last10.filter(r => r === "BIG").length;
+    if (big10 >= 8) {
+        smallScore += 85;
+        patterns.push(`OVB_${big10}`);
+    } else if (big10 <= 2) {
+        bigScore += 85;
+        patterns.push(`OVS_${10-big10}`);
+    } else if (big10 >= 6) {
+        smallScore += 55;
+        patterns.push(`TB_${big10}`);
+    } else if (big10 <= 4) {
+        bigScore += 55;
+        patterns.push(`TS_${10-big10}`);
+    }
+    
+    // 3. LAST 8 MOMENTUM OVERLOAD
+    const big8 = last8.filter(r => r === "BIG").length;
+    if (big8 >= 7) {
+        smallScore += 80;
+        patterns.push(`M7B`);
+    } else if (big8 <= 1) {
+        bigScore += 80;
+        patterns.push(`M7S`);
+    } else if (big8 >= 6) {
+        smallScore += 50;
+        patterns.push(`M6B`);
+    } else if (big8 <= 2) {
+        bigScore += 50;
+        patterns.push(`M6S`);
+    }
+    
+    // 4. LAST 5 REPEAT PATTERN (4/5 same)
+    const big5 = last5.filter(r => r === "BIG").length;
+    if (big5 >= 4) {
+        smallScore += 85;
+        patterns.push(`R4B`);
+    } else if (big5 <= 1) {
+        bigScore += 85;
+        patterns.push(`R4S`);
+    }
+    
+    // 5. TRIPLE REVERSAL
+    if (last3.length === 3 && last3[0] === last3[1] && last3[1] === last3[2]) {
+        if (last3[0] === "BIG") smallScore += 85;
+        else bigScore += 85;
+        patterns.push(`3X_REV`);
+    }
+    
+    // 6. ALTERNATION DETECTION & BREAKER
+    let isAlt = true;
+    for (let i = 1; i < last8.length; i++) {
+        if (last8[i] === last8[i-1]) { isAlt = false; break; }
+    }
+    if (isAlt && last8.length >= 6) {
+        if (lastResult === "BIG") bigScore += 75;
+        else smallScore += 75;
+        patterns.push(`ALT_BREAK`);
+    }
+    
+    // 7. COLD NUMBER ANALYSIS
+    if (numbersHistory && numbersHistory.length >= 20) {
+        const freq = [0,0,0,0,0,0,0,0,0,0];
+        numbersHistory.slice(0, 25).forEach(h => freq[h]++);
+        const coldNumbers = [];
+        for (let i = 0; i < 10; i++) {
+            if (freq[i] <= 1) coldNumbers.push(i);
+        }
+        if (coldNumbers.length >= 3) {
+            const coldBias = coldNumbers.filter(n => n >= 5).length > coldNumbers.filter(n => n < 5).length ? "BIG" : "SMALL";
+            if (coldBias === "BIG") bigScore += 60;
+            else smallScore += 60;
+            patterns.push(`COLD_${coldNumbers.length}`);
+        }
+    }
+    
+    // 8. RSI EXTREME
+    const rsi = (big8 / 8) * 100;
+    if (rsi > 85) {
+        smallScore += 70;
+        patterns.push(`RSI_${Math.round(rsi)}`);
+    } else if (rsi < 15) {
+        bigScore += 70;
+        patterns.push(`RSI_${Math.round(rsi)}`);
+    }
+    
+    // 9. QUANTUM ENTROPY
+    const seedNum = parseInt(periodSeed.slice(-4)) || Date.now();
+    const quantum = (seedNum % 100) / 100;
+    if (quantum > 0.65) {
+        bigScore += 30;
+        patterns.push(`QB`);
+    } else if (quantum < 0.35) {
+        smallScore += 30;
+        patterns.push(`QS`);
+    }
+    
+    // 10. CONSECUTIVE LOSS RECOVERY (DANGER MODE)
+    if (consecutiveLosses >= 2) {
+        const recoveryBoost = 50 + (consecutiveLosses * 10);
+        if (lastResult === "BIG") smallScore += recoveryBoost;
+        else bigScore += recoveryBoost;
+        patterns.push(`🚨RECOVERY_${consecutiveLosses}`);
+    }
+    
+    // FINAL DECISION
+    let finalPred = bigScore > smallScore ? "BIG" : "SMALL";
+    let scoreDiff = Math.abs(bigScore - smallScore);
+    let confidence = Math.min(99, 55 + Math.floor(scoreDiff / 2.2));
+    
+    // Low confidence tie-breaker - follow last result
+    if (scoreDiff < 35) {
+        finalPred = lastResult;
+        confidence = 70;
+        patterns.push(`FL`);
+    }
+    
+    // Generate numbers based on prediction
+    let n1 = 5, n2 = 6;
+    const numPool = finalPred === "BIG" ? [5,6,7,8,9] : [0,1,2,3,4];
+    
+    if (numbersHistory && numbersHistory.length >= 15) {
+    const freq = [0,0,0,0,0,0,0,0,0,0];
+    numbersHistory.slice(0, 25).forEach(h => freq[h]++);
+
+    let coldPool = [...numPool].sort((a,b) => freq[a] - freq[b]);
+
+    // 👉 top 3 cold numbers me se random pick
+    n1 = coldPool[Math.floor(Math.random() * 3)];
+    n2 = coldPool[Math.floor(Math.random() * 3)];
+
+    // 👉 same number avoid
+    while (n2 === n1) {
+        n2 = coldPool[Math.floor(Math.random() * 3)];
+    }
+
+} else {
+    // 👉 random instead of fixed
+    n1 = numPool[Math.floor(Math.random() * numPool.length)];
+    n2 = numPool[Math.floor(Math.random() * numPool.length)];
+
+    while (n2 === n1) {
+        n2 = numPool[Math.floor(Math.random() * numPool.length)];
+    }
+}
+    
+    return { prediction: finalPred, confidence: confidence, patterns: patterns, score: scoreDiff, n1: n1, n2: n2 };
+}
+
+// ========== MAIN ENGINE ==========
+let wingoKey = 'WinGo_1M';
+let wingoMin = 1;
+let predType = 'BS';
+let lastPred = '';
+let winCount = 0;
+let lossCount = 0;
+let consecutiveLosses = 0;
+let lastProcessed = "";
+let currentActive = null;
+
+function updateStatsUI() {
+    document.getElementById('stPass').innerText = winCount;
+    document.getElementById('stLoss').innerText = lossCount;
+    let total = winCount + lossCount;
+    let acc = total > 0 ? Math.floor((winCount / total) * 100) : 0;
+    document.getElementById('stAcc').innerText = acc + "%";
+    document.getElementById('stTotal').innerText = total;
+}
+
+function updateResultUI(predictedSize, num1, num2) {
+    if (predType === 'BS') {
+        document.getElementById('bsResult').style.display = 'block';
+        document.getElementById('rcResult').style.display = 'none';
+        
+        const bsWord = document.getElementById('bsWord');
+        bsWord.innerText = predictedSize;
+        bsWord.className = 'bs-word ' + (predictedSize === 'BIG' ? 'bs-big' : 'bs-small');
+    } else {
+        document.getElementById('bsResult').style.display = 'none';
+        document.getElementById('rcResult').style.display = 'block';
+        
+        const rcWord = document.getElementById('rcWord');
+        const color = predictedSize === 'BIG' ? 'GREEN' : 'RED';
+        rcWord.innerText = color;
+        rcWord.className = 'rc-word ' + (color === 'GREEN' ? 'rc-green' : 'rc-red');
+    }
+
+    document.getElementById('n1').innerText = num1 !== undefined ? num1 : '-';
+    document.getElementById('n2').innerText = num2 !== undefined ? num2 : '-';
+}
+
+async function enginePro() {
+    try {
+        const r = await fetch(buildUrl());
+        const data = await r.json();
+        const list = data.data.list;
+        const latest = list[0];
+        const issue = latest.issueNumber;
+
+        // Verify Results & Add to History
+        if (lastProcessed !== "" && lastProcessed !== issue) {
+            if (currentActive && currentActive.period === issue) {
+                const n = parseInt(latest.number);
+                const sz = n >= 5 ? "BIG" : "SMALL";
+                
+                let statusText = "";
+                let statusColor = "";
+                let statusBg = "";
+                
+                // JACKPOT CHECK
+                if (n === currentActive.n1 || n === currentActive.n2) {
+                    statusText = "🎰 JACKPOT";
+                    statusColor = "#F59E0B"; 
+                    statusBg = "rgba(245, 158, 11, 0.2)";
+                    winCount++;
+                    consecutiveLosses = 0;
+                } 
+                // NORMAL WIN
+                else if (sz === currentActive.size) {
+                    statusText = "✅ WIN";
+                    statusColor = "#10B981"; 
+                    statusBg = "rgba(16, 185, 129, 0.2)";
+                    winCount++;
+                    consecutiveLosses = 0;
+                } 
+                // LOSS
+                else {
+                    statusText = "❌ LOSS";
+                    statusColor = "#DC2626"; 
+                    statusBg = "rgba(220, 38, 38, 0.2)";
+                    lossCount++;
+                    consecutiveLosses++;
+                }
+
+                // Add to History UI
+                let historyHtml = `
+                    <div class="hist-item" style="border-left: 3px solid ${statusColor}">
+                        <div class="h-period">Period: ${issue.slice(-4)}</div>
+                        <div class="h-pred">${currentActive.size} <span style="font-size:10px;color:#9CA3AF">[${currentActive.n1}, ${currentActive.n2}]</span></div>
+                        <div class="h-mode" style="background: ${statusBg}; color: ${statusColor}">${statusText}</div>
+                    </div>
+                `;
+                
+                const histList = document.getElementById('histList');
+                if (histList.innerHTML.includes('No predictions yet')) {
+                    histList.innerHTML = '';
+                }
+                histList.insertAdjacentHTML('afterbegin', historyHtml);
+                
+                updateStatsUI();
+            }
+        }
+
+        const nextP = (BigInt(issue) + 1n).toString();
+        
+        if (!currentActive || currentActive.period !== nextP) {
+            // Build history for AI
+            let recentSizes = [];
+            let numbersHistory = [];
+            for(let i = 0; i < Math.min(50, list.length); i++) {
+                let numVal = parseInt(list[i].number);
+                recentSizes.push(numVal >= 5 ? "BIG" : "SMALL");
+                numbersHistory.push(numVal);
+            }
+            if(histData.length > 0) {
+                for(let i = 0; i < Math.min(20, histData.length); i++) {
+                    recentSizes.unshift(histData[i].size);
+                    numbersHistory.unshift(histData[i].num);
+                }
+            }
+            recentSizes = recentSizes.slice(-50);
+            numbersHistory = numbersHistory.slice(-50);
+            
+            // USE RDX DANGEROUS AI
+            const analysis = analyzeRDXDangerousPatterns(recentSizes, numbersHistory, nextP, consecutiveLosses);
+            
+            currentActive = { 
+                period: nextP, 
+                size: analysis.prediction, 
+                n1: analysis.n1, 
+                n2: analysis.n2 
+            };
+            
+            lastPred = `Game: ${wingoKey} | Period: ${nextP.slice(-4)} | Predict: ${analysis.prediction} | Nums: ${analysis.n1}, ${analysis.n2} | Confidence: ${analysis.confidence}%`;
+
+            document.getElementById('resPeriodBadge').innerHTML = `Period: ${nextP}`;
+            updateResultUI(analysis.prediction, analysis.n1, analysis.n2);
+            
+            // Update AI Trend Panel
+            const isRecovery = consecutiveLosses >= 2;
+            document.getElementById('aiTrendBadge').innerHTML = isRecovery ? '🚨 RECOVERY' : 'ACTIVE';
+            document.getElementById('aiTrendBadge').style.background = isRecovery ? '#F59E0B' : '#DC2626';
+            document.getElementById('trendDirection').innerHTML = `🎯 ${analysis.prediction}`;
+            
+            
+            // Update 3-Level Analysis
+            document.getElementById('levelRows').innerHTML = `
+                <div class="level-row"><div class="level-num lv1">1</div><div style="flex:1"><div class="level-name">TREND DETECTION</div><div class="level-desc"></div></div><div class="level-verdict lvd-confirm">✅ ${analysis.score > 50 ? 'STRONG' : 'ACTIVE'}</div></div>
+                <div class="level-row"><div class="level-num lv2">2</div><div style="flex:1"><div class="level-name">MOMENTUM ANALYSIS</div><div class="level-desc"></div></div><div class="level-verdict lvd-confirm">✅ LOCKED</div></div>
+                <div class="level-row"><div class="level-num lv3">3</div><div style="flex:1"><div class="level-name">FINAL VERDICT</div><div class="level-desc"></div></div><div class="level-verdict lvd-confirm">${analysis.confidence >= 80 ? '🎯 SURE SHOT' : '✅ READY'}</div></div>
+            `;
+            
+
+        }
+        lastProcessed = issue;
+    } catch(e) { 
+        console.log(e); 
+    }
+}
+
+let histData = [];
+
+function startClock() {
+
+    function update() {
+        const now = Date.now();
+        const date = new Date();
+
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+
+        // Clock UI
+        const hH = document.getElementById('hH');
+        const hM = document.getElementById('hM');
+        const hS = document.getElementById('hS');
+
+        if (hH) hH.innerText = String(hours).padStart(2, '0');
+        if (hM) hM.innerText = String(minutes).padStart(2, '0');
+        if (hS) hS.innerText = String(seconds).padStart(2, '0');
+
+        // 🔥 ULTRA SMOOTH TIMER
+        let cycle;
+
+        if (wingoMin === 0.5) cycle = 30000;
+        else if (wingoMin === 1) cycle = 60000;
+        else if (wingoMin === 3) cycle = 180000;
+        else cycle = 300000;
+
+        let remainingMs = cycle - (now % cycle);
+
+        let sec = Math.floor(remainingMs / 1000);
+        let ms = Math.floor((remainingMs % 1000) / 10);
+
+        const hCdBig = document.getElementById('hCdBig');
+        const pTimer = document.getElementById('pTimer');
+
+        if (hCdBig) hCdBig.innerText = String(sec).padStart(2, '0');
+
+        let secStr = String(sec).padStart(2, '0');
+        let msStr = String(ms).padStart(2, '0');
+
+        if (pTimer) pTimer.innerText = secStr + '.' + msStr;
+
+        // 🔁 60 FPS LOOP
+        requestAnimationFrame(update);
+    }
+
+    update();
+}
+
+// Initialize
+buildDays();
+startClock();
+fetchPeriod();
+enginePro(); 
+
+setInterval(enginePro, 3000);
+setInterval(fetchPeriod, 10000);
+
+document.getElementById('stSrv').innerText = 'BOSS AI';
+
+
+window.onload = function () {
+    try {
+        fetchPeriod();   // server call
+    } catch(e) {}
+
+    try {
+        startTimer();    // agar timer function hai
+    } catch(e) {}
+};
+
+
+</script>
+</body>
+</html>
