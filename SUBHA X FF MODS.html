@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TryonAI - Wingo 1Min Developer API & Pro Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-green: #00a859;
+      --dark-green: #034222;
+      --light-green-bg: #f2f7f4;
+      --card-bg: #ffffff;
+      --accent-green: #00e676;
+      --ball-red: #f44336;
+      --ball-green: #4caf50;
+      --ball-purple: #9c27b0;
+      --text-dark: #1b2e23;
+      --text-muted: #6b8273;
+      --border-light: #e2ece5;
+      --font-main: 'Poppins', sans-serif;
+      --font-num: 'Outfit', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-main); user-select: none; }
+    
+    body {
+      background-color: var(--light-green-bg);
+      color: var(--text-dark);
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding-bottom: 90px;
+      position: relative;
+    }
+
+    /* Top Navigation Header */
+    .top-header {
+      background: var(--primary-green);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0, 168, 89, 0.2);
+    }
+
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .header-left i { font-size: 18px; cursor: pointer; }
+    
+    .brand-logo {
+      font-family: var(--font-num);
+      font-size: 22px;
+      font-weight: 900;
+      font-style: italic;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: -0.5px;
+    }
+    .brand-logo span { color: #80e6b1; font-style: normal; }
+
+    .header-right { display: flex; align-items: center; gap: 14px; }
+    .rules-btn { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.15); padding: 5px 10px; border-radius: 8px; }
+
+    .container { padding: 12px; }
+
+    /* Modals & Slide Drawer */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+      z-index: 2000; display: none; align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: #ffffff; border-radius: 20px; width: 100%; max-width: 440px;
+      padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative;
+      max-height: 90vh; overflow-y: auto;
+    }
+
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--dark-green); }
+    .close-btn { font-size: 20px; color: var(--text-muted); cursor: pointer; }
+
+    .strict-rules-card { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 14px; padding: 14px; margin-bottom: 16px; }
+    .rule-item { display: flex; gap: 10px; margin-bottom: 12px; font-size: 12px; color: var(--text-dark); line-height: 1.4; }
+    .rule-item i { color: var(--primary-green); margin-top: 2px; font-size: 14px; }
+
+    .user-profile-box {
+      background: #f8fafc; border: 1px solid var(--border-light); border-radius: 14px;
+      padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .user-left { display: flex; align-items: center; gap: 12px; }
+    .user-avatar {
+      width: 38px; height: 38px; border-radius: 50%; background: #008844; color: #fff;
+      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px;
+    }
+    .user-name { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+    .user-email { font-size: 11px; color: var(--text-muted); }
+    .logout-btn {
+      background: #ef4444; color: #ffffff; border: none; padding: 6px 14px;
+      border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+
+    .drawer-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); z-index: 2400; display: none;
+    }
+    .drawer-overlay.active { display: block; }
+
+    .drawer-menu {
+      position: fixed; top: 0; left: -100%; width: 80%; max-width: 320px; height: 100%;
+      background: #ffffff; color: var(--text-dark); z-index: 2500; transition: left 0.3s ease;
+      padding: 20px; display: flex; flex-direction: column; box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+    }
+    .drawer-menu.active { left: 0; }
+
+    .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 12px; }
+    .drawer-title { font-size: 18px; font-weight: 800; color: var(--dark-green); }
+
+    .nav-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
+      font-size: 14px; font-weight: 600; color: var(--text-dark); cursor: pointer; transition: background 0.2s;
+    }
+    .nav-item:hover, .nav-item.active { background: #eaf6ed; color: var(--primary-green); }
+    .nav-item i { font-size: 16px; width: 20px; }
+
+    /* Standard Cards */
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border-light);
+    }
+
+    .timer-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 10px; }
+    .how-to-play-card { background: #f8fbf9; border: 1px solid var(--border-light); border-radius: 14px; padding: 10px; position: relative; }
+    .card-subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+    .card-title-sm { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+
+    .how-balls-row { display: flex; gap: 6px; margin-top: 6px; align-items: center; }
+
+    .mini-ball {
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: #fff;
+      font-family: var(--font-num); position: relative;
+      box-shadow: inset -2px -2px 4px rgba(0,0,0,0.35), inset 2px 2px 4px rgba(255,255,255,0.7), 0 3px 6px rgba(0,0,0,0.12);
+      border: 2px solid rgba(255,255,255,0.85); overflow: hidden;
+    }
+
+    .mini-ball::after {
+      content: ''; position: absolute; top: 2px; left: 4px; width: 65%; height: 35%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0) 100%);
+      border-radius: 50% 50% 0 0; pointer-events: none;
+    }
+
+    .timer-card { text-align: center; }
+    .timer-title { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    .timer-digits { display: flex; justify-content: center; gap: 4px; font-family: var(--font-num); font-size: 20px; font-weight: 800; }
+    .timer-box { background: #f0f5f2; padding: 4px 8px; border-radius: 8px; color: var(--text-dark); border: 1px solid #d4e3d9; }
+    .period-text { font-size: 10px; color: var(--text-muted); margin-top: 6px; font-family: var(--font-num); font-weight: 600; }
+
+    .balls-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 10px 0; justify-items: center; }
+
+    .ball-btn {
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 800; color: #fff;
+      font-family: var(--font-num); cursor: pointer;
+      position: relative; border: 3px solid rgba(255, 255, 255, 0.85);
+      box-shadow: inset -3px -3px 6px rgba(0,0,0,0.35), inset 3px 3px 6px rgba(255,255,255,0.8), 0 5px 10px rgba(0,0,0,0.15);
+      transition: transform 0.1s ease;
+    }
+    .ball-btn:active { transform: scale(0.92); }
+
+    .ball-green { background: radial-gradient(circle at 35% 35%, #81c784, #388e3c 70%, #1b5e20 100%); }
+    .ball-red { background: radial-gradient(circle at 35% 35%, #e57373, #d32f2f 70%, #8e0000 100%); }
+    .ball-half-0 { background: linear-gradient(135deg, #ef5350 48%, #ab47bc 52%); }
+    .ball-half-5 { background: linear-gradient(135deg, #66bb6a 48%, #ab47bc 52%); }
+
+    .multipliers-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-top: 10px; }
+    .mult-btn { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-light); background: #f7fbf8; font-size: 11px; font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap; }
+    .mult-btn.active { background: var(--primary-green); color: #fff; border-color: var(--primary-green); }
+
+    .ai-box { 
+      background: linear-gradient(180deg, #07522a 0%, #03361a 100%); 
+      color: #fff; border-radius: 20px; padding: 16px; margin-bottom: 12px; position: relative; 
+    }
+    .ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .ai-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+
+    .mascot-badge-egg {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .ai-stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: center;
+      background: #ffffff; padding: 14px 8px; border-radius: 16px; margin-bottom: 12px;
+      color: var(--text-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .stat-col { text-align: center; }
+    .stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+
+    .circle-progress {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: conic-gradient(var(--primary-green) 92%, #e2ece5 0);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto;
+      transition: background 0.3s ease;
+    }
+    .circle-inner { 
+      width: 46px; height: 46px; background: #ffffff; border-radius: 50%; 
+      display: flex; align-items: center; justify-content: center; 
+      font-size: 14px; font-weight: 800; color: #008844; 
+    }
+
+    .result-val { font-size: 18px; font-weight: 800; color: #008844; font-family: var(--font-num); }
+    .result-line { width: 50px; height: 3px; background: #00a859; border-radius: 2px; margin: 8px auto 0 auto; }
+
+    .gen-btn-ribbon {
+      width: 100%; padding: 14px; background: var(--primary-green); color: #ffffff;
+      border: none; font-size: 15px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px;
+      text-transform: uppercase; margin-bottom: 4px; position: relative; border-radius: 4px;
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+      box-shadow: 0 4px 15px rgba(0, 168, 89, 0.4); transition: transform 0.1s ease;
+    }
+    .gen-btn-ribbon:active { transform: scale(0.98); }
+
+    .card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--text-dark); }
+    .more-link { font-size: 11px; color: var(--primary-green); font-weight: 600; text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+    .chart-container { position: relative; width: 100%; height: 140px; margin-top: 8px; }
+    .chart-svg { width: 100%; height: 100%; overflow: visible; }
+
+    .hot-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+    .hot-item { display: flex; justify-content: space-between; align-items: center; }
+    .hot-left { display: flex; align-items: center; gap: 10px; }
+    
+    .hot-badge {
+      background: #fff0f0; color: #ff4d4d; border-radius: 8px; padding: 2px 8px;
+      font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px;
+    }
+    .hot-count { font-size: 12px; font-weight: 700; color: var(--text-muted); font-family: var(--font-num); }
+
+    .history-card { padding: 0; overflow: hidden; }
+    .history-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .history-table th { background: var(--primary-green); color: #fff; padding: 12px 6px; font-weight: 600; text-align: center; font-size: 12px; }
+    .history-table td { padding: 10px 4px; text-align: center; border-bottom: 1px solid #f0f4f1; color: var(--text-dark); vertical-align: middle; }
+
+    .period-cell { font-family: var(--font-num); font-size: 11px; font-weight: 600; color: #2c3e50; }
+    
+    .bs-pill {
+      display: inline-block; padding: 3px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; text-align: center;
+    }
+    .bs-pill.small { background: #eaf6ed; color: #1e7e43; }
+    .bs-pill.big { background: #fdeaea; color: #d32f2f; }
+
+    .color-dots-container { display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .dot-item { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    .dot-red { background: var(--ball-red); }
+    .dot-green { background: var(--ball-green); }
+    .dot-purple { background: var(--ball-purple); }
+
+    /* DASHBOARD TAB STYLES */
+    .db-green-card { background: linear-gradient(180deg, #07522a 0%, #03361a 100%); color: #ffffff; border-radius: 20px; padding: 16px; margin-bottom: 12px; position: relative; }
+    .db-live-pill { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; color: #ffffff; margin-bottom: 10px; }
+    .db-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .db-title { font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; }
+    .db-sub { font-size: 11px; color: #a3c9b3; margin-top: 2px; }
+
+    .rabbit-mascot-box { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; padding: 6px 10px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+    .rabbit-win-rate { font-size: 16px; font-weight: 800; color: #ffffff; font-family: var(--font-num); }
+
+    .db-period-box { background: rgba(0, 0, 0, 0.18); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .db-period-label { font-size: 10px; color: #a3c9b3; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .db-period-val { font-size: 16px; font-weight: 800; color: #ffffff; font-family: var(--font-num); }
+
+    .db-stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .db-stat-box { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; padding: 10px 8px; text-align: left; }
+    .db-stat-top { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #a3c9b3; margin-bottom: 4px; }
+    .db-stat-num { font-size: 18px; font-weight: 800; color: #ffffff; font-family: var(--font-num); }
+    .db-stat-sub { font-size: 10px; color: #a3c9b3; margin-top: 2px; }
+
+    .db-card-item {
+      background: #ffffff; border-radius: 16px; padding: 14px 16px; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 14px; border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .db-icon-square {
+      width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .icon-box-mint { background: #eaf6ed; color: var(--primary-green); }
+    .icon-box-green { background: var(--primary-green); color: #ffffff; }
+    .icon-box-red { background: #ffebee; color: #f44336; }
+    .icon-box-gold { background: #fff8e1; color: #ffa000; }
+    .icon-box-purple { background: #f3e5f5; color: #9c27b0; }
+
+    .db-card-body { display: flex; flex-direction: column; gap: 2px; }
+    .db-card-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .db-card-val { font-size: 18px; font-weight: 800; color: var(--text-dark); font-family: var(--font-num); }
+    .db-card-sub { font-size: 10px; color: var(--text-muted); }
+
+    .active-signals-card {
+      background: linear-gradient(135deg, #fbf7ff 0%, #f3e8ff 100%);
+      border: 1px solid #e9d5ff; border-radius: 16px; padding: 14px 16px; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .db-gauge-card {
+      background: #f0f8f3; border-radius: 18px; padding: 24px 16px; text-align: center;
+      margin-bottom: 10px; border: 1px solid #d1ebd8;
+    }
+    .db-gauge-circle {
+      width: 140px; height: 140px; border-radius: 50%; background: #ffffff;
+      border: 8px solid #00a859; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    }
+    .db-gauge-val { font-size: 32px; font-weight: 900; color: var(--dark-green); font-family: var(--font-num); }
+    .db-gauge-lbl { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 2px; }
+
+    .db-repeat-card {
+      background: #ffffff; border-radius: 16px; padding: 16px; margin-bottom: 10px;
+      border: 1px solid var(--border-light);
+    }
+    .db-repeat-title { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 12px; }
+    .db-repeat-row { display: flex; align-items: center; gap: 14px; }
+
+    .telegram-btn {
+      background: #229ED9; color: #ffffff; text-decoration: none; display: flex;
+      align-items: center; justify-content: center; gap: 8px; padding: 14px;
+      border-radius: 12px; font-size: 13px; font-weight: 800; width: 100%; border: none; cursor: pointer;
+      margin-top: 10px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(34, 158, 217, 0.3);
+    }
+
+    .freq-card { background: #ffffff; border-radius: 16px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--border-light); }
+    .freq-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .freq-title { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+    .freq-rounds-lbl { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+
+    .freq-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; align-items: flex-end; height: 110px; }
+    .freq-col { display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+    .freq-bar-bg { width: 14px; height: 70px; background: #f0f5f2; border-radius: 10px; position: relative; overflow: hidden; display: flex; align-items: flex-end; }
+    .freq-bar-fill { width: 100%; background: var(--primary-green); border-radius: 10px; transition: height 0.3s ease; }
+    .freq-count-val { font-size: 10px; font-weight: 700; color: var(--text-muted); font-family: var(--font-num); }
+
+    /* DEVELOPER API PAGE STYLING */
+    .api-hero-card {
+      background: #eaf6ed; border: 1px solid #c2e7cc;
+      border-radius: 18px; padding: 18px; margin-bottom: 14px;
+    }
+    .api-live-pill {
+      background: #c2e7cc; color: var(--dark-green); padding: 4px 10px; border-radius: 12px; font-size: 11px;
+      font-weight: 800; display: inline-block; margin-bottom: 12px;
+    }
+    .api-hero-title { font-size: 24px; font-weight: 900; color: var(--dark-green); margin-bottom: 6px; }
+    .api-hero-sub { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+
+    .api-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .api-stat-box {
+      background: #ffffff; border: 1px solid var(--border-light);
+      border-radius: 14px; padding: 14px; text-align: left;
+    }
+    .api-stat-val { font-size: 20px; font-weight: 900; font-family: var(--font-num); color: var(--dark-green); }
+    .api-stat-lbl { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
+
+    .getting-started-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .gs-card { background: #ffffff; border: 1px solid var(--border-light); border-radius: 14px; padding: 12px; text-align: center; }
+    .gs-num { width: 28px; height: 28px; border-radius: 50%; background: var(--primary-green); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 12px; }
+    .gs-title { font-size: 12px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+    .gs-desc { font-size: 10px; color: var(--text-muted); line-height: 1.3; }
+
+    .api-key-box { background: #f8fafc; border: 1px solid var(--border-light); border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+    .api-key-input { width: 100%; padding: 8px 10px; border: 1px solid var(--border-light); border-radius: 8px; font-family: monospace; font-size: 13px; margin-top: 6px; margin-bottom: 10px; background: #fff; }
+    
+    .btn-group { display: flex; gap: 8px; }
+    .btn-sm { padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary { background: var(--primary-green); color: #fff; }
+    .btn-danger { background: #ffebee; color: #f44336; border: 1px solid #ffcdd2; }
+
+    .date-range-flex { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .date-picker-input { width: 100%; padding: 8px 10px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 11px; font-family: var(--font-main); }
+
+    .doc-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
+    .doc-table th { background: #f0f5f2; text-align: left; padding: 8px; font-weight: 700; color: var(--text-dark); }
+    .doc-table td { padding: 8px; border-bottom: 1px solid #f0f5f2; color: var(--text-dark); }
+
+    .code-tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px; margin-bottom: 10px; }
+    .code-tab-btn { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; background: #f0f5f2; color: var(--text-muted); border: none; cursor: pointer; }
+    .code-tab-btn.active { background: var(--dark-green); color: #fff; }
+
+    .code-snippet-box { background: #0f172a; color: #38bdf8; border-radius: 12px; padding: 12px; font-family: monospace; font-size: 11px; line-height: 1.5; overflow-x: auto; white-space: pre; }
+
+    .alert-banner-red { background: #ffebee; border: 1px solid #ffcdd2; color: #d32f2f; border-radius: 10px; padding: 10px; font-size: 12px; font-weight: 600; text-align: center; margin-bottom: 12px; }
+
+    /* Bottom Dock Bar */
+    .bottom-dock {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px;
+      background: var(--dark-green); display: flex; justify-around: space-around; align-items: center;
+      padding: 8px 16px 12px 16px; z-index: 1000; border-top-left-radius: 20px; border-top-right-radius: 20px;
+    }
+
+    .dock-btn { background: none; border: none; color: #a3c9b3; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; }
+    .dock-btn.active { color: var(--accent-green); }
+    .dock-btn i { font-size: 20px; }
+
+    .fab-btn {
+      width: 52px; height: 52px; border-radius: 50%; background: var(--accent-green); color: var(--dark-green);
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+      box-shadow: 0 4px 15px rgba(0, 230, 118, 0.5); border: 4px solid var(--dark-green); margin-top: -24px; cursor: pointer;
+    }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <div class="top-header">
+    <div class="header-left">
+      <i class="fas fa-bars" onclick="toggleDrawer(true)"></i>
+      <i class="fas fa-chevron-down"></i>
+      <div class="brand-logo">Tryon<span>AI</span></div>
+    </div>
+    <div class="header-right">
+      <div class="rules-btn" onclick="toggleModal('strictRulesModal', true)">
+        <i class="fas fa-book-open"></i>
+        <span>Rules</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer Control Center Menu -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
+  <div class="drawer-menu" id="drawerMenu">
+    <div class="drawer-header">
+      <div class="drawer-title">Control Center</div>
+      <i class="fas fa-times close-btn" onclick="toggleDrawer(false)"></i>
+    </div>
+
+    <div class="user-profile-box" style="margin-bottom: 16px;">
+      <div class="user-left">
+        <div class="user-avatar">M</div>
+        <div>
+          <div class="user-name">Mid Night</div>
+          <div class="user-email">monnight145688@gmail.com</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-list">
+      <div class="nav-item active" onclick="switchTab('tabPredict'); toggleDrawer(false);">
+        <i class="fas fa-brain"></i> Predict (Wingo 1Min)
+      </div>
+      <div class="nav-item" onclick="switchTab('tabDashboard'); toggleDrawer(false);">
+        <i class="fas fa-chart-bar"></i> Chart / Dashboard
+      </div>
+      <div class="nav-item" onclick="switchTab('tabDeveloperApi'); toggleDrawer(false);">
+        <i class="fas fa-code"></i> Developer API
+      </div>
+      <div class="nav-item" onclick="toggleModal('strictRulesModal', true); toggleDrawer(false);">
+        <i class="fas fa-shield-alt"></i> Rules & Access
+      </div>
+    </div>
+
+    <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-light);">
+      <button class="logout-btn" style="width:100%; padding:12px;" onclick="alert('Logged out');">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- Strict Rules Popup Modal -->
+  <div class="modal-overlay" id="strictRulesModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fas fa-shield-alt" style="color:var(--primary-green)"></i> TRION AI - STRICT RULES
+        </div>
+        <i class="fas fa-times close-btn" onclick="toggleModal('strictRulesModal', false)"></i>
+      </div>
+
+      <div class="strict-rules-card">
+        <div class="rule-item"><i class="fas fa-check-circle"></i> <span>Auto predictions with real-time Wingo 1Min data.</span></div>
+        <div class="rule-item"><i class="fas fa-check-circle"></i> <span>Pro-Level Quantitative EWMA + Dragon Streak Engine.</span></div>
+        <div class="rule-item"><i class="fas fa-check-circle"></i> <span>NO SKIP MODE: Active predictions with Auto-Risk Guard.</span></div>
+        <div class="rule-item"><i class="fas fa-check-circle"></i> <span>100% Real-time automatic Win/Loss settlement.</span></div>
+        <div class="rule-item"><i class="fas fa-check-circle"></i> <span>Security and privacy always come first.</span></div>
+      </div>
+
+      <div class="user-profile-box">
+        <div class="user-left">
+          <div class="user-avatar">M</div>
+          <div>
+            <div class="user-name">Mid Night</div>
+            <div class="user-email">monnight145688@gmail.com</div>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="toggleModal('strictRulesModal', false)">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Container -->
+  <div class="container">
+
+    <!-- TAB 1: PREDICT (WINGO 1MIN GAME DASHBOARD) -->
+    <div class="tab-pane active" id="tabPredict">
+
+      <div class="card timer-grid">
+        <div class="how-to-play-card">
+          <div class="card-title-sm">How to play</div>
+          <div class="card-subtitle">Win go 1Min</div>
+          <div class="how-balls-row">
+            <div class="mini-ball ball-red">2</div>
+            <div class="mini-ball ball-red">2</div>
+            <div class="mini-ball ball-green">7</div>
+            <div class="mini-ball ball-red">2</div>
+          </div>
+        </div>
+
+        <div class="timer-card">
+          <div class="timer-title">Time remaining</div>
+          <div class="timer-digits">
+            <div class="timer-box">0</div>
+            <div class="timer-box">0</div>
+            <span style="align-self:center;">:</span>
+            <div class="timer-box" id="secDigit1">0</div>
+            <div class="timer-box" id="secDigit2">0</div>
+          </div>
+          <div class="period-text" id="periodDisplay">-- | --</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="balls-grid">
+          <div class="ball-btn ball-half-0">0</div>
+          <div class="ball-btn ball-green">1</div>
+          <div class="ball-btn ball-red">2</div>
+          <div class="ball-btn ball-green">3</div>
+          <div class="ball-btn ball-red">4</div>
+          <div class="ball-btn ball-half-5">5</div>
+          <div class="ball-btn ball-red">6</div>
+          <div class="ball-btn ball-green">7</div>
+          <div class="ball-btn ball-red">8</div>
+          <div class="ball-btn ball-green">9</div>
+        </div>
+
+        <div class="multipliers-row">
+          <button class="mult-btn"><i class="fas fa-random"></i> Random</button>
+          <button class="mult-btn active">X1</button>
+          <button class="mult-btn">X5</button>
+          <button class="mult-btn">X10</button>
+          <button class="mult-btn">X20</button>
+          <button class="mult-btn">X50</button>
+          <button class="mult-btn">X100</button>
+        </div>
+      </div>
+
+      <div class="ai-box">
+        <div class="ai-header">
+          <div>
+            <div class="ai-title"><i class="fas fa-brain" style="color:var(--accent-green)"></i> AI Prediction</div>
+            <div class="card-subtitle" style="color:#a3c9b3; margin-bottom:0;" id="patternRuleTag">Quantitative EWMA + Dragon Engine</div>
+          </div>
+          
+          <div class="mascot-badge-egg">
+            <svg width="34" height="34" viewBox="0 0 40 40">
+              <ellipse cx="20" cy="24" rx="13" ry="12" fill="#80e6b1" />
+              <path d="M 10 24 Q 15 20 20 24 T 30 24 L 31 32 Q 20 37 9 32 Z" fill="#ffffff" />
+              <circle cx="16" cy="18" r="2" fill="#034222" />
+              <circle cx="24" cy="18" r="2" fill="#034222" />
+              <path d="M 18 21 Q 20 23 22 21" stroke="#034222" stroke-width="1.5" fill="none" />
+              <path d="M 20 12 Q 17 8 14 10" stroke="#00e676" stroke-width="2" fill="none" />
+              <circle cx="13" cy="10" r="2" fill="#00e676" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="ai-stats-grid">
+          <div class="stat-col">
+            <div class="stat-label">Win Chance</div>
+            <div class="circle-progress" id="winRateCircle">
+              <div class="circle-inner" id="winRateVal">96%</div>
+            </div>
+          </div>
+
+          <div class="stat-col">
+            <div class="stat-label">Next Period</div>
+            <div style="margin: 4px auto;">
+              <svg width="46" height="46" viewBox="0 0 50 50">
+                <circle cx="25" cy="26" r="18" fill="#4caf50" />
+                <ellipse cx="16" cy="12" rx="4" ry="8" fill="#66bb6a" />
+                <ellipse cx="34" cy="12" rx="4" ry="8" fill="#66bb6a" />
+                <ellipse cx="16" cy="12" rx="2" ry="5" fill="#a5d6a7" />
+                <ellipse cx="34" cy="12" rx="2" ry="5" fill="#a5d6a7" />
+                <circle cx="20" cy="24" r="2.5" fill="#1b2e23" />
+                <circle cx="30" cy="24" r="2.5" fill="#1b2e23" />
+                <ellipse cx="25" cy="28" rx="3" ry="2" fill="#388e3c" />
+                <circle cx="35" cy="32" r="7" fill="#ffd700" stroke="#ffa000" stroke-width="1.5" />
+                <text x="35" y="35" font-size="8" font-weight="900" fill="#7f4f00" text-anchor="middle">$</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="stat-col">
+            <div class="stat-label">Result</div>
+            <div class="result-val" id="predResultTxt">-- / --</div>
+            <div class="result-line"></div>
+          </div>
+        </div>
+
+        <button class="gen-btn-ribbon" onclick="generatePrediction()">GENERATE PREDICTION</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div class="card-title">Trend Chart</div>
+          <div class="more-link">More <i class="fas fa-chevron-right" style="font-size: 10px;"></i></div>
+        </div>
+
+        <div class="chart-container">
+          <svg class="chart-svg" id="trendChartSvg" viewBox="0 0 350 140"></svg>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div class="card-title">Hot & Cold</div>
+          <div class="more-link">More <i class="fas fa-chevron-right" style="font-size: 10px;"></i></div>
+        </div>
+
+        <div class="hot-list" id="hotColdContainer"></div>
+      </div>
+
+      <div class="history-card card">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th>Number</th>
+              <th>Big Small</th>
+              <th>Color</th>
+            </tr>
+          </thead>
+          <tbody id="historyTBody">
+            <tr><td colspan="4" style="padding:15px;">Connecting to Live 1M API...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: CHART / DASHBOARD PAGE -->
+    <div class="tab-pane" id="tabDashboard">
+      <div class="db-green-card">
+        <div class="db-live-pill">
+          <i class="fas fa-sparkles" style="color:var(--accent-green); font-size:10px;"></i>
+          <span style="color:var(--accent-green); font-weight:800;">● LIVE</span>
+          <span>Live premium dashboard</span>
+        </div>
+
+        <div class="db-header-row">
+          <div>
+            <div class="db-title">🔥 Dashboard</div>
+            <div class="db-sub">Clean signal control by @SUBHAMODS</div>
+          </div>
+
+          <div class="rabbit-mascot-box">
+            <div style="font-size:8px; color:#a3c9b3; font-weight:700;">WIN RATE</div>
+            <div class="rabbit-win-rate" id="rabbitWinRate">0%</div>
+            <svg width="28" height="28" viewBox="0 0 40 40" style="margin-top:2px;">
+              <circle cx="20" cy="22" r="12" fill="#d7ccc8" />
+              <ellipse cx="14" cy="8" rx="3" ry="8" fill="#d7ccc8" />
+              <ellipse cx="26" cy="8" rx="3" ry="8" fill="#d7ccc8" />
+              <ellipse cx="14" cy="8" rx="1.5" ry="5" fill="#f8bbd0" />
+              <ellipse cx="26" cy="8" rx="1.5" ry="5" fill="#f8bbd0" />
+              <circle cx="16" cy="20" r="1.5" fill="#3e2723" />
+              <circle cx="24" cy="20" r="1.5" fill="#3e2723" />
+              <circle cx="20" cy="23" r="1.2" fill="#f8bbd0" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="db-period-box">
+          <div class="db-period-label">CURRENT PERIOD</div>
+          <div class="db-period-val" id="dbPeriodDisplay">--</div>
+        </div>
+
+        <div class="db-stats-row">
+          <div class="db-stat-box">
+            <div class="db-stat-top"><i class="far fa-clock"></i> Timer</div>
+            <div class="db-stat-num" id="dbTimerDisplay">00:00</div>
+            <div class="db-stat-sub">Next period</div>
+          </div>
+
+          <div class="db-stat-box">
+            <div class="db-stat-top"><i class="fas fa-bullseye"></i> Hot Signal</div>
+            <div class="db-stat-num" id="dbHotVal">--</div>
+            <div class="db-stat-sub" id="dbHotTimes">-- Times</div>
+          </div>
+
+          <div class="db-stat-box">
+            <div class="db-stat-top"><i class="fas fa-layer-group"></i> Rounds</div>
+            <div class="db-stat-num" id="dbTotalCount">10</div>
+            <div class="db-stat-sub">Live sample</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- METRIC CARDS -->
+      <div class="db-card-item">
+        <div class="db-icon-square icon-box-mint"><i class="fas fa-sparkles"></i></div>
+        <div class="db-card-body">
+          <div class="db-card-label">Quick Scan</div>
+          <div class="db-card-val">10 Live</div>
+          <div class="db-card-sub">Auto refresh mode</div>
+        </div>
+      </div>
+
+      <div class="db-card-item">
+        <div class="db-icon-square icon-box-mint"><i class="fas fa-bolt"></i></div>
+        <div class="db-card-body">
+          <div class="db-card-label">Risk Guard</div>
+          <div class="db-card-val" id="dbRiskGuardVal">0 Miss</div>
+          <div class="db-card-sub">Track weak streaks</div>
+        </div>
+      </div>
+
+      <div class="db-card-item">
+        <div class="db-icon-square icon-box-mint"><i class="fas fa-chart-line"></i></div>
+        <div class="db-card-body">
+          <div class="db-card-label">Trend Lock</div>
+          <div class="db-card-val" id="dbTrendLockVal">--</div>
+          <div class="db-card-sub" id="dbTrendLockTimes">-- Times</div>
+        </div>
+      </div>
+
+      <div class="db-card-item">
+        <div class="db-icon-square icon-box-mint"><i class="fas fa-crosshair"></i></div>
+        <div class="db-card-body">
+          <div class="db-card-label">Reward Zone</div>
+          <div class="db-card-val" style="font-size:16px;">Gift Ready</div>
+          <div class="db-card-sub">Premium signal flow</div>
+        </div>
+      </div>
+
+      <div class="db-card-item">
+        <div class="db-icon-square icon-box-green"><i class="fas fa-layer-group"></i></div>
+        <div class="db-card-body">
+          <div class="db-card-label">Total Prediction</div>
+          <div class="db-card-val" id="dbTotalPredVal">0</div>
+          <div class="db-card-sub">Settled rounds</div>
+        </div>
+      </div>
+
+      <div class="db-card-item">
+        <div class="db-icon-square icon-box-green"><i class="fas fa-bullseye"></i></div>
+        <div class="db-card-body">
+          <div class="db-card-label">Prediction Wins</div>
+          <div class="db-card-val" id="dbPredWinsVal">0</div>
+          <div class="db-card-sub">Color matched</div>
+        </div>
+      </div>
+
+      <div class="db-card-item">
+        <div class="db-icon-square icon-box-red"><i class="fas fa-bolt"></i></div>
+        <div class="db-card-body">
+          <div class="db-card-label">Prediction Loss</div>
+          <div class="db-card-val" style="color:#ef4444" id="dbPredLossVal">0</div>
+          <div class="db-card-sub">Missed rounds</div>
+        </div>
+      </div>
+
+      <div class="db-card-item">
+        <div class="db-icon-square icon-box-gold"><i class="fas fa-chart-bar"></i></div>
+        <div class="db-card-body">
+          <div class="db-card-label">Win Accuracy</div>
+          <div class="db-card-val" id="dbAccuracyVal">0%</div>
+          <div class="db-card-sub">Live accuracy</div>
+        </div>
+      </div>
+
+      <div class="active-signals-card">
+        <div class="db-icon-square icon-box-purple"><i class="fas fa-brain"></i></div>
+        <div class="db-card-body">
+          <div class="db-card-label">Active Signals</div>
+          <div class="db-card-val">25</div>
+          <div class="db-card-sub">Quantitative Pro Matrix Active</div>
+        </div>
+      </div>
+
+      <!-- CIRCULAR WIN ACCURACY GAUGE CARD -->
+      <div class="db-gauge-card">
+        <div class="db-gauge-circle">
+          <div class="db-gauge-val" id="dbGaugeVal">0%</div>
+          <div class="db-gauge-lbl">Win Accuracy</div>
+        </div>
+      </div>
+
+      <!-- TOP REPEAT SIGNAL CARD -->
+      <div class="db-repeat-card">
+        <div class="db-repeat-title">Top Repeat Signal</div>
+        <div class="db-repeat-row">
+          <div class="mini-ball ball-green" id="topRepeatBall" style="width:38px; height:38px; font-size:16px;">-</div>
+          <div>
+            <div style="font-size:16px; font-weight:800; color:var(--text-dark);" id="topRepeatCount">-- Times</div>
+            <div style="font-size:11px; color:var(--text-muted);" id="topRepeatSub">Latest result --</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NUMBER FREQUENCY BAR CHART CARD -->
+      <div class="freq-card">
+        <div class="freq-header">
+          <div class="freq-title">Number Frequency</div>
+          <div class="freq-rounds-lbl">10 rounds</div>
+        </div>
+        <div class="freq-grid" id="freqBarsGrid"></div>
+      </div>
+
+      <!-- TELEGRAM BUTTON -->
+      <button class="telegram-btn" onclick="window.open('https://t.me', '_blank')">
+        <i class="fab fa-telegram-plane" style="font-size:18px;"></i> JOIN TELEGRAM CHANNEL
+      </button>
+
+    </div>
+
+    <!-- TAB 3: DEVELOPER API PAGE -->
+    <div class="tab-pane" id="tabDeveloperApi">
+      
+      <div class="api-hero-card">
+        <div class="api-live-pill">● LIVE REST API</div>
+        <div class="api-hero-title">Developer API</div>
+        <div class="api-hero-sub">
+          Integrate real-time Wingo 1Min game data into your applications. Access draw history, analyze patterns, and build powerful tools.
+        </div>
+
+        <div class="api-stats-row">
+          <div class="api-stat-box">
+            <div class="api-stat-val" id="apiTotalRecordsVal">37,616</div>
+            <div class="api-stat-lbl">RECORDS</div>
+          </div>
+
+          <div class="api-stat-box">
+            <div class="api-stat-val" style="font-size: 13px; color:var(--primary-green);" id="apiLastSyncedVal">Just now</div>
+            <div class="api-stat-lbl">LAST SYNCED</div>
+          </div>
+        </div>
+
+        <div style="background:#ffffff; border:1px solid var(--border-light); border-radius:12px; padding:10px; font-size:11px; color:var(--text-dark); display:flex; justify-content:space-between; align-items:center;">
+          <div><i class="fas fa-bolt" style="color:var(--primary-green);"></i> <strong>60/min</strong> RATE LIMIT</div>
+          <span style="font-size:10px; color:var(--text-muted);">Reset every 60s</span>
+        </div>
+      </div>
+
+      <!-- Getting Started Cards -->
+      <div style="font-size:14px; font-weight:800; color:var(--text-dark); margin-bottom:10px;">Getting Started</div>
+      <div class="getting-started-grid">
+        <div class="gs-card">
+          <div class="gs-num">1</div>
+          <div class="gs-title">Generate API Key</div>
+          <div class="gs-desc">Create a unique API key for your application.</div>
+        </div>
+        <div class="gs-card">
+          <div class="gs-num">2</div>
+          <div class="gs-title">Copy Your Key</div>
+          <div class="gs-desc">Save it securely — you won't see it again after you leave.</div>
+        </div>
+        <div class="gs-card">
+          <div class="gs-num">3</div>
+          <div class="gs-title">Read Documentation</div>
+          <div class="gs-desc">Understand endpoints, parameters, and response formats.</div>
+        </div>
+        <div class="gs-card">
+          <div class="gs-num">4</div>
+          <div class="gs-title">Make Your First Request</div>
+          <div class="gs-desc">Use the playground to test the API in real-time.</div>
+        </div>
+      </div>
+
+      <!-- API Dashboard Box -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:8px;">API Dashboard</div>
+        <div class="api-key-box">
+          <div style="font-size:11px; color:var(--text-muted); font-weight:700;">API KEY</div>
+          <input type="text" class="api-key-input" value="ws_kDdUYy...5.ac" readonly id="apiKeyInput">
+          <div class="btn-group">
+            <button class="btn-sm btn-primary" onclick="copyApiKey()"><i class="fas fa-copy"></i> Copy Key</button>
+            <button class="btn-sm btn-danger" onclick="alert('Key Revoked')"><i class="fas fa-trash"></i> Revoke Key</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code Examples -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px;">Code Examples</div>
+        <div class="code-tabs">
+          <button class="code-tab-btn active" onclick="switchCodeTab('python', this)">Python</button>
+          <button class="code-tab-btn" onclick="switchCodeTab('javascript', this)">JavaScript</button>
+          <button class="code-tab-btn" onclick="switchCodeTab('php', this)">PHP</button>
+        </div>
+
+        <div class="code-snippet-box" id="codeSnippetBox">
+import requests
+
+API_KEY = 'ws_kDdUYy...5.ac'
+BASE_URL = 'https://wingo30.com'
+
+headers = {'Authorization': f'Bearer {API_KEY}'}
+response = requests.get(f'{BASE_URL}/api/developer/1-min-game-history', headers=headers)
+print(response.json())
+        </div>
+      </div>
+
+      <!-- Live Database Browser -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px;">Live Database Browser</div>
+        <div style="margin-bottom:8px;">
+          <input type="text" class="date-picker-input" placeholder="Search by period..." id="periodSearchInput">
+        </div>
+
+        <div class="date-range-flex">
+          <div>
+            <div style="font-size:10px; color:var(--text-muted); font-weight:700; margin-bottom:2px;">START DATE</div>
+            <input type="date" class="date-picker-input" value="2026-08-10" id="startDatePicker">
+          </div>
+          <div>
+            <div style="font-size:10px; color:var(--text-muted); font-weight:700; margin-bottom:2px;">END DATE</div>
+            <input type="date" class="date-picker-input" value="2026-08-10" id="endDatePicker">
+          </div>
+        </div>
+
+        <button class="btn-sm btn-primary" style="width:100%; margin-bottom:10px; justify-content:center;" onclick="filterDatabase()">Filter</button>
+
+        <div class="alert-banner-red">Invalid or revoked API key</div>
+
+        <div style="font-size:11px; color:var(--text-muted); text-align:center;">
+          No records found. Generate an API key and make a request to populate the database.
+        </div>
+      </div>
+
+      <!-- API Documentation -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px;">API Documentation</div>
+        
+        <div style="font-size:11px; color:var(--text-muted); font-weight:700;">BASE URL</div>
+        <div style="background:#f0f5f2; padding:8px; border-radius:8px; font-family:monospace; font-size:12px; margin-bottom:10px;">https://wingo30.com</div>
+
+        <div style="font-size:11px; color:var(--text-muted); font-weight:700;">ENDPOINTS</div>
+        <div style="background:#eaf6ed; padding:6px 10px; border-radius:6px; font-size:11px; font-weight:800; color:var(--primary-green); display:inline-block; margin-top:4px;">GET /api/developer/1-min-game-history</div>
+
+        <table class="doc-table" style="margin-top:10px;">
+          <thead>
+            <tr><th>PARAM</th><th>TYPE</th><th>DEFAULT</th><th>DESCRIPTION</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>page</td><td>integer</td><td>1</td><td>Page number</td></tr>
+            <tr><td>limit</td><td>integer</td><td>50</td><td>Records per page (max 100)</td></tr>
+            <tr><td>period</td><td>string</td><td>-</td><td>Search by period number</td></tr>
+            <tr><td>startDate</td><td>string</td><td>-</td><td>Filter from date (YYYY-MM-DD)</td></tr>
+            <tr><td>endDate</td><td>string</td><td>-</td><td>Filter to date (YYYY-MM-DD)</td></tr>
+          </tbody>
+        </table>
+
+        <!-- JSON Success Response Viewer -->
+        <div style="font-size:11px; color:var(--text-muted); font-weight:700; margin-top:14px; margin-bottom:4px;">SUCCESS RESPONSE SCHEMA</div>
+        <div class="code-snippet-box">
+{
+  "ok": true,
+  "endpoint": "/api/developer/1-min-game-history",
+  "data": [
+    {
+      "period": "20260810100051898",
+      "number": 5,
+      "size": "Big",
+      "color": "Green",
+      "timestamp": "2026-08-10T04:40:15Z"
+    }
+  ]
+}
+        </div>
+
+        <!-- Error Codes Table -->
+        <div style="font-size:11px; color:var(--text-muted); font-weight:700; margin-top:14px; margin-bottom:4px;">ERROR CODES</div>
+        <table class="doc-table">
+          <thead>
+            <tr><th>CODE</th><th>DESCRIPTION</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>401</td><td>Missing or invalid API key</td></tr>
+            <tr><td>426</td><td>HTTPS required in production</td></tr>
+            <tr><td>429</td><td>Rate limit exceeded (60 req/min)</td></tr>
+            <tr><td>405</td><td>Method not allowed</td></tr>
+            <tr><td>503</td><td>Service unavailable (MongoDB)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- API Playground -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px;">API Playground</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <input type="text" class="date-picker-input" value="ws_kDdUYy...5.ac" placeholder="API Key">
+          <button class="gen-btn-ribbon" style="margin-bottom:0;" onclick="sendApiTestRequest()">SEND REQUEST</button>
+        </div>
+        <div class="code-snippet-box" style="margin-top:10px; height:120px;" id="playgroundResponse">
+// Click SEND REQUEST to test live API endpoint response...
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bottom Dock Bar -->
+  <div class="bottom-dock">
+    <button class="dock-btn active" id="dockPredict" onclick="switchTab('tabPredict')">
+      <i class="fas fa-brain"></i>
+      <span>Predict</span>
+    </button>
+    
+    <div class="fab-btn" onclick="generatePrediction()">
+      <i class="fas fa-bolt"></i>
+    </div>
+    
+    <button class="dock-btn" id="dockDashboard" onclick="switchTab('tabDashboard')">
+      <i class="fas fa-chart-bar"></i>
+      <span>Chart</span>
+    </button>
+  </div>
+
+  <script>
+    const API_URL = "https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json";
+    let globalHistoryList = [];
+    let totalRecordCount = 37616;
+    let lastSyncTimestamp = new Date();
+    let isFetching = false;
+
+    // REAL-TIME ACCURACY & PREDICTION TRACKING ENGINE
+    let predictionsMap = {}; 
+    let trackingStats = {
+      settledTotal: 0,
+      wins: 0,
+      losses: 0,
+      missStreak: 0
+    };
+
+    function getBallCssClass(num) {
+      if (num === 0) return 'ball-half-0';
+      if (num === 5) return 'ball-half-5';
+      if ([1, 3, 7, 9].includes(num)) return 'ball-green';
+      return 'ball-red';
+    }
+
+    function getColorDotsHtml(num) {
+      if (num === 0) return '<span class="dot-item dot-red"></span><span class="dot-item dot-purple"></span>';
+      if (num === 5) return '<span class="dot-item dot-green"></span><span class="dot-item dot-purple"></span>';
+      if ([1, 3, 7, 9].includes(num)) return '<span class="dot-item dot-green"></span>';
+      return '<span class="dot-item dot-red"></span>';
+    }
+
+    function updateLastSyncDisplay() {
+      const el = document.getElementById('apiLastSyncedVal');
+      if (!el) return;
+      
+      const now = new Date();
+      const diffSecs = Math.floor((now - lastSyncTimestamp) / 1000);
+
+      if (diffSecs < 5) {
+        el.innerText = "Just now";
+      } else if (diffSecs < 60) {
+        el.innerText = `${diffSecs}s ago`;
+      } else {
+        const timeStr = lastSyncTimestamp.toTimeString().split(' ')[0];
+        el.innerText = timeStr;
+      }
+    }
+
+    /* =========================================================================
+       🔥 ADVANCED PRO-LEVEL QUANTITATIVE AI ENGINE (UPDATED BETTER LOGIC)
+       ========================================================================= */
+
+    // ১. রিসেন্ট ওয়েটেড মুভিং এভারেজ (EWMA) ক্যালকুলেটর
+    function calculateEWMA(nums) {
+      const weights = [5, 4, 3, 2, 1]; // শেষ ৫টি ড্র-কে ক্রমান্বয়ে বেশি গুরুত্ব দেওয়া
+      let weightedSum = 0;
+      let totalWeight = 0;
+
+      for (let i = 0; i < Math.min(5, nums.length); i++) {
+        weightedSum += nums[i] * weights[i];
+        totalWeight += weights[i];
+      }
+      return weightedSum / totalWeight;
+    }
+
+    // ২. অ্যাডভান্সড ট্রেন্ড ও সাইকেল ডিটেক্টর Engine
+    function analyzeAdvancedPatterns(nums) {
+      const sizes = nums.map(n => n >= 5 ? 'B' : 'S');
+      const s0 = sizes[0];
+
+      // (A) ড্রাগন স্ট্রিক (Dragon Streak Check)
+      let streak = 1;
+      for (let i = 0; i < sizes.length - 1; i++) {
+        if (sizes[i] === sizes[i + 1]) streak++;
+        else break;
+      }
+
+      // (B) পিং-পং বা অল্টারনেট সাইকেল (Ping-Pong Check)
+      let pingPong = 1;
+      for (let i = 0; i < sizes.length - 1; i++) {
+        if (sizes[i] !== sizes[i + 1]) pingPong++;
+        else break;
+      }
+
+      // লজিক ১: ড্রাগন মোমেন্টাম (ড্রাগন ভাঙতে চেষ্টা করবে না - ট্রেন্ড ফলো করবে)
+      if (streak >= 3) {
+        return {
+          bs: s0 === 'B' ? 'Big' : 'Small',
+          rule: `🔥 Dragon Momentum (${streak}x ${s0 === 'B' ? 'Big' : 'Small'})`,
+          confidence: Math.min(98, 88 + streak * 2),
+          skip: false
+        };
+      }
+
+      // লজিক ২: পিং-পং সাইকেল লক (BSBS Alternating)
+      if (pingPong >= 3) {
+        const nextBs = s0 === 'B' ? 'Small' : 'Big';
+        return {
+          bs: nextBs,
+          rule: `🔄 Ping-Pong Cycle (${pingPong}x Alternate)`,
+          confidence: 94,
+          skip: false
+        };
+      }
+
+      // লজিক ৩: EWMA ট্রেন্ড মোমেন্টাম
+      const ewmaVal = calculateEWMA(nums);
+      const ewmaBs = ewmaVal >= 4.8 ? 'Big' : 'Small';
+
+      // লজিক ৪: মার্কেট ভোলাটিলিটি চেক (যদি খুব অস্থির থাকে বা ২ লস হয়ে থাকে তবে স্কিপ)
+      const isVolatile = (streak === 1 && pingPong === 1);
+      if (isVolatile && trackingStats.missStreak >= 2) {
+        return {
+          bs: ewmaBs,
+          rule: `⚠️ High Volatility - Risk Detected`,
+          confidence: 60,
+          skip: true // স্কিপ সিগন্যাল
+        };
+      }
+
+      return {
+        bs: ewmaBs,
+        rule: `📊 EWMA Quantitative Trend (${ewmaVal.toFixed(1)})`,
+        confidence: 92,
+        skip: false
+      };
+    }
+
+    // ৩. মাস্টার প্রেডিকশন জেনারেটর (Updated Master Engine)
+    function computeMasterPrediction(historyList) {
+      if (!historyList || historyList.length < 5) {
+        return { num: 7, bs: 'Big', rule: 'Analyzing Market Data...', winProb: 90, skip: false };
+      }
+
+      const nums = historyList.slice(0, 20).map(i => Number(i.number !== undefined ? i.number : i.resultNum));
+      const patternAnalysis = analyzeAdvancedPatterns(nums);
+      
+      if (patternAnalysis.skip) {
+        return { num: '-', bs: 'SKIP', rule: patternAnalysis.rule, winProb: 50, skip: true };
+      }
+
+      const ewma = calculateEWMA(nums);
+      const targetBs = patternAnalysis.bs;
+
+      // প্রেডিক্টেড সাইজ অনুযায়ী পারফেক্ট টার্গেট নাম্বার (0-9) নির্বাচন
+      const validNumbers = targetBs === 'Big' ? [5, 6, 7, 8, 9] : [0, 1, 2, 3, 4];
+      
+      // EWMA এর সবচেয়ে কাছাকাছি সংখ্যা নির্বাচন
+      let bestNumber = validNumbers[0];
+      let minDiff = 999;
+
+      validNumbers.forEach(n => {
+        const diff = Math.abs(n - ewma);
+        if (diff < minDiff) {
+          minDiff = diff;
+          bestNumber = n;
+        }
+      });
+
+      return {
+        num: bestNumber,
+        bs: targetBs,
+        rule: patternAnalysis.rule,
+        winProb: patternAnalysis.confidence,
+        skip: false
+      };
+    }
+
+    // ৪. রিয়েল-টাইম UI আপডেট এবং সেফটি কন্ট্রোল
+    function generatePrediction() {
+      if (!globalHistoryList || globalHistoryList.length === 0) return;
+
+      const latestItem = globalHistoryList[0];
+      const latestPeriod = BigInt(latestItem.issueNumber || latestItem.issueNum || 20260807100051308);
+      const targetPeriodStr = (latestPeriod + 1n).toString();
+
+      const evalResult = computeMasterPrediction(globalHistoryList);
+
+      // যদি রিস্ক বেশি থাকে তবে স্কিপ নোটিফিকেশন দেওয়া
+      if (evalResult.skip) {
+        document.getElementById('predResultTxt').innerText = "SKIP / WAIT";
+        document.getElementById('predResultTxt').style.color = "#f59e0b"; // Warning Orange
+        document.getElementById('patternRuleTag').innerText = evalResult.rule;
+        document.getElementById('winRateVal').innerText = "50%";
+        return;
+      }
+
+      if (!predictionsMap[targetPeriodStr]) {
+        predictionsMap[targetPeriodStr] = {
+          predictedNum: evalResult.num,
+          predictedBs: evalResult.bs,
+          settled: false,
+          result: null
+        };
+      } else {
+        predictionsMap[targetPeriodStr].predictedNum = evalResult.num;
+        predictionsMap[targetPeriodStr].predictedBs = evalResult.bs;
+      }
+
+      document.getElementById('predResultTxt').innerText = `${evalResult.num} / ${evalResult.bs}`;
+      document.getElementById('predResultTxt').style.color = "#008844";
+      document.getElementById('patternRuleTag').innerText = evalResult.rule;
+      document.getElementById('winRateVal').innerText = `${evalResult.winProb}%`;
+
+      const circleEl = document.getElementById('winRateCircle');
+      circleEl.style.background = `conic-gradient(var(--primary-green) ${evalResult.winProb}%, #e2ece5 0)`;
+
+      updateRealStatsUI();
+    }
+
+    /* =========================================================================
+       SYSTEM SETTLEMENT & DISPLAY LOGIC
+       ========================================================================= */
+
+    function settlePredictions() {
+      if (!globalHistoryList || globalHistoryList.length === 0) return;
+
+      globalHistoryList.forEach(drawItem => {
+        const periodStr = (drawItem.issueNumber || drawItem.issueNum || '').toString();
+        const actualNum = Number(drawItem.number !== undefined ? drawItem.number : drawItem.resultNum);
+        const actualBs = actualNum >= 5 ? 'Big' : 'Small';
+
+        if (predictionsMap[periodStr] && !predictionsMap[periodStr].settled) {
+          const pred = predictionsMap[periodStr];
+          pred.settled = true;
+
+          if (actualBs === pred.predictedBs || actualNum === pred.predictedNum) {
+            pred.result = 'WIN';
+            trackingStats.wins++;
+            trackingStats.missStreak = 0;
+          } else {
+            pred.result = 'LOSS';
+            trackingStats.losses++;
+            trackingStats.missStreak++;
+          }
+
+          trackingStats.settledTotal++;
+        }
+      });
+
+      updateRealStatsUI();
+    }
+
+    function updateRealStatsUI() {
+      const settledCount = trackingStats.settledTotal;
+      const winCount = trackingStats.wins;
+      const lossCount = trackingStats.losses;
+
+      const accuracy = settledCount > 0 ? Math.round((winCount / settledCount) * 100) : 0;
+      const accuracyStr = `${accuracy}%`;
+
+      document.getElementById('rabbitWinRate').innerText = accuracyStr;
+      document.getElementById('dbTotalPredVal').innerText = settledCount;
+      document.getElementById('dbPredWinsVal').innerText = winCount;
+      document.getElementById('dbPredLossVal').innerText = lossCount;
+      document.getElementById('dbAccuracyVal').innerText = accuracyStr;
+      document.getElementById('dbGaugeVal').innerText = accuracyStr;
+      document.getElementById('dbRiskGuardVal').innerText = `${trackingStats.missStreak} Miss`;
+    }
+
+    function renderTrendChart(historyData) {
+      const svg = document.getElementById('trendChartSvg');
+      svg.innerHTML = '';
+      if (!historyData || historyData.length === 0) return;
+
+      const chartItems = historyData.slice(0, 6).reverse();
+      const width = 350; const height = 140;
+      const stepX = width / (chartItems.length - 1 || 1);
+      const getY = (num) => height - 20 - (num / 9) * (height - 40);
+
+      const points = chartItems.map((item, idx) => ({
+        x: idx * stepX,
+        y: getY(Number(item.number !== undefined ? item.number : item.resultNum)),
+        num: Number(item.number !== undefined ? item.number : item.resultNum)
+      }));
+
+      const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      polyline.setAttribute('points', points.map(p => `${p.x},${p.y}`).join(' '));
+      polyline.setAttribute('fill', 'none');
+      polyline.setAttribute('stroke', '#00a859');
+      polyline.setAttribute('stroke-width', '3');
+      svg.appendChild(polyline);
+
+      points.forEach(p => {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', p.x); circle.setAttribute('cy', p.y);
+        circle.setAttribute('r', '10'); circle.setAttribute('fill', p.num >= 5 ? '#388e3c' : '#d32f2f');
+        circle.setAttribute('stroke', '#ffffff'); circle.setAttribute('stroke-width', '2');
+        svg.appendChild(circle);
+
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', p.x); text.setAttribute('y', p.y + 3.5);
+        text.setAttribute('fill', '#ffffff'); text.setAttribute('font-size', '10');
+        text.setAttribute('font-weight', '800'); text.setAttribute('text-anchor', 'middle');
+        text.textContent = p.num;
+        svg.appendChild(text);
+      });
+    }
+
+    function renderHotColdStats(historyData) {
+      const container = document.getElementById('hotColdContainer');
+      container.innerHTML = '';
+      const counts = {}; for (let i = 0; i <= 9; i++) counts[i] = 0;
+      historyData.forEach(item => {
+        const num = Number(item.number !== undefined ? item.number : item.resultNum);
+        counts[num] = (counts[num] || 0) + 1;
+      });
+
+      const sortedHot = Object.keys(counts).map(Number).sort((a, b) => counts[b] - counts[a]).slice(0, 3);
+      sortedHot.forEach(num => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'hot-item';
+        itemDiv.innerHTML = `
+          <div class="hot-left">
+            <div class="mini-ball ${getBallCssClass(num)}">${num}</div>
+            <div class="hot-badge"><i class="fas fa-rocket"></i> Hot</div>
+          </div>
+          <div class="hot-count">${counts[num]} Times</div>
+        `;
+        container.appendChild(itemDiv);
+      });
+    }
+
+    function updateDashboardTabCards(historyData) {
+      if (!historyData || historyData.length === 0) return;
+      
+      const counts = {}; for (let i = 0; i <= 9; i++) counts[i] = 0;
+      historyData.slice(0, 10).forEach(item => {
+        const num = Number(item.number !== undefined ? item.number : item.resultNum);
+        counts[num] = (counts[num] || 0) + 1;
+      });
+
+      const sorted = Object.keys(counts).map(Number).sort((a, b) => counts[b] - counts[a]);
+      const hotNum = sorted[0];
+
+      document.getElementById('dbHotVal').innerText = hotNum;
+      document.getElementById('dbHotTimes').innerText = `${counts[hotNum]} Times`;
+      document.getElementById('dbTrendLockVal').innerText = `No. ${hotNum}`;
+      document.getElementById('dbTrendLockTimes').innerText = `${counts[hotNum]} Times`;
+      document.getElementById('dbTotalCount').innerText = `${historyData.length}`;
+
+      const topBallEl = document.getElementById('topRepeatBall');
+      topBallEl.className = `mini-ball ${getBallCssClass(hotNum)}`;
+      topBallEl.innerText = hotNum;
+      document.getElementById('topRepeatCount').innerText = `${counts[hotNum]} Times`;
+      document.getElementById('topRepeatSub').innerText = `Latest result ${hotNum} / ${hotNum >= 5 ? 'Big' : 'Small'}`;
+
+      const freqGrid = document.getElementById('freqBarsGrid');
+      freqGrid.innerHTML = '';
+      for (let i = 0; i <= 9; i++) {
+        const count = counts[i];
+        const heightPercent = Math.min(100, (count / 5) * 100);
+        const col = document.createElement('div');
+        col.className = 'freq-col';
+        col.innerHTML = `
+          <div class="mini-ball ${getBallCssClass(i)}" style="width:20px; height:20px; font-size:10px;">${i}</div>
+          <div class="freq-bar-bg"><div class="freq-bar-fill" style="height: ${heightPercent}%;"></div></div>
+          <div class="freq-count-val">${count}</div>
+        `;
+        freqGrid.appendChild(col);
+      }
+    }
+
+    async function fetchLiveWingoData() {
+      if (isFetching) return;
+      isFetching = true;
+      try {
+        const ts = Date.now();
+        const response = await fetch(`${API_URL}?ts=${ts}`);
+        const json = await response.json();
+        let list = json?.data?.list || json?.list || json;
+
+        if (Array.isArray(list) && list.length > 0) {
+          globalHistoryList = list;
+          lastSyncTimestamp = new Date();
+          updateLastSyncDisplay();
+          settlePredictions();
+          renderHistoryTable(list.slice(0, 10));
+          updatePeriodDisplay(list[0]);
+          renderTrendChart(list);
+          renderHotColdStats(list);
+          updateDashboardTabCards(list);
+        }
+      } catch (err) {
+        console.error("API Fetch Error:", err);
+      } finally {
+        isFetching = false;
+      }
+    }
+
+    function renderHistoryTable(dataList) {
+      const tbody = document.getElementById('historyTBody');
+      tbody.innerHTML = '';
+      dataList.forEach(item => {
+        const periodNum = item.issueNumber || item.issueNum || '---';
+        const num = Number(item.number !== undefined ? item.number : item.resultNum);
+        const bs = num >= 5 ? 'Big' : 'Small';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="period-cell">${periodNum}</td>
+          <td><div class="mini-ball ${getBallCssClass(num)}" style="margin:0 auto">${num}</div></td>
+          <td><span class="bs-pill ${bs.toLowerCase()}">${bs}</span></td>
+          <td><div class="color-dots-container">${getColorDotsHtml(num)}</div></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updatePeriodDisplay(latestItem) {
+      if (!latestItem) return;
+      const latestPeriod = BigInt(latestItem.issueNumber || latestItem.issueNum || 20260807100052861);
+      const nextPeriod = (latestPeriod + 1n).toString();
+      
+      let formattedPeriod = nextPeriod;
+      if (nextPeriod.length > 8) {
+        formattedPeriod = `${nextPeriod.substring(0, 8)} ${nextPeriod.substring(8)}`;
+      }
+
+      document.getElementById('periodDisplay').innerText = formattedPeriod.replace(' ', ' | ');
+      document.getElementById('dbPeriodDisplay').innerText = formattedPeriod;
+    }
+
+    function start1MinTimer() {
+      setInterval(() => {
+        const now = new Date();
+        const seconds = 60 - (now.getSeconds() % 60);
+        const displaySec = seconds === 60 ? 0 : seconds;
+        const secStr = displaySec < 10 ? '0' + displaySec : displaySec.toString();
+        
+        document.getElementById('secDigit1').innerText = secStr[0];
+        document.getElementById('secDigit2').innerText = secStr[1];
+        document.getElementById('dbTimerDisplay').innerText = `00:${secStr}`;
+
+        updateLastSyncDisplay();
+
+        if (displaySec === 0 || displaySec === 58) {
+          setTimeout(() => {
+            fetchLiveWingoData();
+          }, 2000);
+        }
+      }, 1000);
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.dock-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      if (tabId === 'tabPredict') document.getElementById('dockPredict').classList.add('active');
+      if (tabId === 'tabDashboard') document.getElementById('dockDashboard').classList.add('active');
+    }
+
+    function toggleModal(modalId, show) {
+      const modal = document.getElementById(modalId);
+      if (show) modal.classList.add('active');
+      else modal.classList.remove('active');
+    }
+
+    function toggleDrawer(show) {
+      const drawer = document.getElementById('drawerMenu');
+      const overlay = document.getElementById('drawerOverlay');
+      if (show) { drawer.classList.add('active'); overlay.classList.add('active'); }
+      else { drawer.classList.remove('active'); overlay.classList.remove('active'); }
+    }
+
+    function copyApiKey() {
+      navigator.clipboard.writeText("ws_kDdUYy...5.ac");
+      alert("API Key copied to clipboard!");
+    }
+
+    function switchCodeTab(lang, btn) {
+      document.querySelectorAll('.code-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const snippet = document.getElementById('codeSnippetBox');
+      if (lang === 'python') {
+        snippet.innerText = `import requests\nheaders = {'Authorization': 'Bearer ws_kDdUYy...5.ac'}\nr = requests.get('https://wingo30.com/api/developer/1-min-game-history', headers=headers)\nprint(r.json())`;
+      } else if (lang === 'javascript') {
+        snippet.innerText = `fetch('https://wingo30.com/api/developer/1-min-game-history', {\n  headers: { 'Authorization': 'Bearer ws_kDdUYy...5.ac' }\n}).then(res => res.json()).then(console.log);`;
+      } else if (lang === 'php') {
+        snippet.innerText = `<?php\n$opts = ["http" => ["header" => "Authorization: Bearer ws_kDdUYy...5.ac\\r\\n"]];\n$context = stream_context_create($opts);\n$res = file_get_contents('https://wingo30.com/api/developer/1-min-game-history', false, $context);\necho $res;`;
+      }
+    }
+
+    function filterDatabase() {
+      alert("Fetching filtered date-range records from Wingo 1Min MongoDB cluster...");
+    }
+
+    function sendApiTestRequest() {
+      const box = document.getElementById('playgroundResponse');
+      box.innerText = `{\n  "ok": true,\n  "endpoint": "/api/developer/1-min-game-history",\n  "total_records": ${totalRecordCount},\n  "last_synced": "${lastSyncTimestamp.toISOString()}",\n  "data": [\n    {"period": "${globalHistoryList[0]?.issueNumber}", "number": ${globalHistoryList[0]?.number}, "size": "${globalHistoryList[0]?.number >= 5 ? 'Big' : 'Small'}"}\n  ]\n}`;
+    }
+
+    // App Initialization
+    fetchLiveWingoData();
+    start1MinTimer();
+  </script>
+</body>
+</html>
